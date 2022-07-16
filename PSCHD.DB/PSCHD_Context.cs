@@ -12,6 +12,11 @@ namespace PSCHD.DB
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
+            path = path + "/PSCHD";
+            if (!System.IO.Directory.Exists(path))
+            {
+                System.IO.Directory.CreateDirectory(path);
+            }
             DbPath = System.IO.Path.Join(path, "PSCHD.db");
         }
 
@@ -130,6 +135,11 @@ namespace PSCHD.DB
                 new MagicKeyword { Id = 54, Keyword = "Protection" },
                 new MagicKeyword { Id = 55, Keyword = "Typecycling" },
                 new MagicKeyword { Id = 56, Keyword = "Split second" });
+
+            modelBuilder.Entity<MagicGame>().HasData(
+                new MagicGame { Id = 1, magicGame = "paper" },
+                new MagicGame { Id = 2, magicGame = "arena" },
+                new MagicGame { Id = 3, magicGame = "mtgo" });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -157,5 +167,6 @@ namespace PSCHD.DB
         public DbSet<MagicCardColor> MagicCardColors { get; set; }
         public DbSet<MagicCardColorIdentity> MagicCardColorIdentities { get; set; }
         public DbSet<MagicCardKeyword> MagicCardKeywords { get; set; }
+        public DbSet<MagicCardGame> MagicCardGames { get; set; }
     }
 }

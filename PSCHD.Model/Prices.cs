@@ -12,7 +12,8 @@ namespace PSCHD.Model
         public decimal Price { get; set; }
         public virtual string currency { get; set; }
         public virtual Finish Finish { get; set; }
+        [Timestamp]
         public virtual DateTime datetime { get; set; }
-        public virtual MagicCard Parent { get; set; }
+        public virtual MagicCard MagicCard { get; set; }
     }
 }

@@ -11,8 +11,8 @@ using PSCHD.DB;
 namespace PSCHD.DB.Migrations
 {
     [DbContext(typeof(PSCHD_Context))]
-    [Migration("20220716141339_V1")]
-    partial class V1
+    [Migration("20220716180647_V0")]
+    partial class V0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -369,6 +369,27 @@ namespace PSCHD.DB.Migrations
                     b.ToTable("MagicCardColorIdentities");
                 });
 
+            modelBuilder.Entity("PSCHD.Model.MagicCardGame", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("MagicCardId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("MagicGameId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MagicCardId");
+
+                    b.HasIndex("MagicGameId");
+
+                    b.ToTable("MagicCardGames");
+                });
+
             modelBuilder.Entity("PSCHD.Model.MagicCardKeyword", b =>
                 {
                     b.Property<int>("Id")
@@ -421,6 +442,138 @@ namespace PSCHD.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Colors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            magicColor = 'A'
+                        },
+                        new
+                        {
+                            Id = 2,
+                            magicColor = 'B'
+                        },
+                        new
+                        {
+                            Id = 3,
+                            magicColor = 'C'
+                        },
+                        new
+                        {
+                            Id = 4,
+                            magicColor = 'D'
+                        },
+                        new
+                        {
+                            Id = 5,
+                            magicColor = 'E'
+                        },
+                        new
+                        {
+                            Id = 6,
+                            magicColor = 'F'
+                        },
+                        new
+                        {
+                            Id = 7,
+                            magicColor = 'G'
+                        },
+                        new
+                        {
+                            Id = 8,
+                            magicColor = 'H'
+                        },
+                        new
+                        {
+                            Id = 9,
+                            magicColor = 'I'
+                        },
+                        new
+                        {
+                            Id = 10,
+                            magicColor = 'J'
+                        },
+                        new
+                        {
+                            Id = 11,
+                            magicColor = 'K'
+                        },
+                        new
+                        {
+                            Id = 12,
+                            magicColor = 'L'
+                        },
+                        new
+                        {
+                            Id = 13,
+                            magicColor = 'M'
+                        },
+                        new
+                        {
+                            Id = 14,
+                            magicColor = 'N'
+                        },
+                        new
+                        {
+                            Id = 15,
+                            magicColor = 'O'
+                        },
+                        new
+                        {
+                            Id = 16,
+                            magicColor = 'P'
+                        },
+                        new
+                        {
+                            Id = 17,
+                            magicColor = 'Q'
+                        },
+                        new
+                        {
+                            Id = 18,
+                            magicColor = 'R'
+                        },
+                        new
+                        {
+                            Id = 19,
+                            magicColor = 'S'
+                        },
+                        new
+                        {
+                            Id = 20,
+                            magicColor = 'T'
+                        },
+                        new
+                        {
+                            Id = 21,
+                            magicColor = 'U'
+                        },
+                        new
+                        {
+                            Id = 22,
+                            magicColor = 'V'
+                        },
+                        new
+                        {
+                            Id = 23,
+                            magicColor = 'W'
+                        },
+                        new
+                        {
+                            Id = 24,
+                            magicColor = 'X'
+                        },
+                        new
+                        {
+                            Id = 25,
+                            magicColor = 'Y'
+                        },
+                        new
+                        {
+                            Id = 26,
+                            magicColor = 'Z'
+                        });
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicColorIdentity", b =>
@@ -435,6 +588,138 @@ namespace PSCHD.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Colors_Identity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            magicColorIdentity = 'A'
+                        },
+                        new
+                        {
+                            Id = 2,
+                            magicColorIdentity = 'B'
+                        },
+                        new
+                        {
+                            Id = 3,
+                            magicColorIdentity = 'C'
+                        },
+                        new
+                        {
+                            Id = 4,
+                            magicColorIdentity = 'D'
+                        },
+                        new
+                        {
+                            Id = 5,
+                            magicColorIdentity = 'E'
+                        },
+                        new
+                        {
+                            Id = 6,
+                            magicColorIdentity = 'F'
+                        },
+                        new
+                        {
+                            Id = 7,
+                            magicColorIdentity = 'G'
+                        },
+                        new
+                        {
+                            Id = 8,
+                            magicColorIdentity = 'H'
+                        },
+                        new
+                        {
+                            Id = 9,
+                            magicColorIdentity = 'I'
+                        },
+                        new
+                        {
+                            Id = 10,
+                            magicColorIdentity = 'J'
+                        },
+                        new
+                        {
+                            Id = 11,
+                            magicColorIdentity = 'K'
+                        },
+                        new
+                        {
+                            Id = 12,
+                            magicColorIdentity = 'L'
+                        },
+                        new
+                        {
+                            Id = 13,
+                            magicColorIdentity = 'M'
+                        },
+                        new
+                        {
+                            Id = 14,
+                            magicColorIdentity = 'N'
+                        },
+                        new
+                        {
+                            Id = 15,
+                            magicColorIdentity = 'O'
+                        },
+                        new
+                        {
+                            Id = 16,
+                            magicColorIdentity = 'P'
+                        },
+                        new
+                        {
+                            Id = 17,
+                            magicColorIdentity = 'Q'
+                        },
+                        new
+                        {
+                            Id = 18,
+                            magicColorIdentity = 'R'
+                        },
+                        new
+                        {
+                            Id = 19,
+                            magicColorIdentity = 'S'
+                        },
+                        new
+                        {
+                            Id = 20,
+                            magicColorIdentity = 'T'
+                        },
+                        new
+                        {
+                            Id = 21,
+                            magicColorIdentity = 'U'
+                        },
+                        new
+                        {
+                            Id = 22,
+                            magicColorIdentity = 'V'
+                        },
+                        new
+                        {
+                            Id = 23,
+                            magicColorIdentity = 'W'
+                        },
+                        new
+                        {
+                            Id = 24,
+                            magicColorIdentity = 'X'
+                        },
+                        new
+                        {
+                            Id = 25,
+                            magicColorIdentity = 'Y'
+                        },
+                        new
+                        {
+                            Id = 26,
+                            magicColorIdentity = 'Z'
+                        });
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicGame", b =>
@@ -443,17 +728,29 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("magicGame")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
-
                     b.ToTable("MagicGames");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            magicGame = "paper"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            magicGame = "arena"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            magicGame = "mtgo"
+                        });
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicKeyword", b =>
@@ -468,6 +765,288 @@ namespace PSCHD.DB.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MagicKeyword");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Keyword = "Flying"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Keyword = "Enchant"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Keyword = "Cascade"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Keyword = "Scavenge"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Keyword = "Manifest"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Keyword = "Trample"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Keyword = "Partner"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Keyword = "Aftermath"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Keyword = "Equip"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Keyword = "Flanking"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Keyword = "Defender"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Keyword = "Scry"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Keyword = "Flashback"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Keyword = "Reach"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Keyword = "Lifelink"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Keyword = "First strike"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Keyword = "Vigilance"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Keyword = "Transform"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Keyword = "Kicker"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Keyword = "Menace"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Keyword = "Heroic"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Keyword = "Persist"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Keyword = "Ascend"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            Keyword = "Parley"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            Keyword = "Mill"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            Keyword = "Imprint"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Keyword = "Hexproof"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            Keyword = "Convoke"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            Keyword = "Surveil"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            Keyword = "Mutate"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            Keyword = "Hellbent"
+                        },
+                        new
+                        {
+                            Id = 32,
+                            Keyword = "Haste"
+                        },
+                        new
+                        {
+                            Id = 33,
+                            Keyword = "Landcycling"
+                        },
+                        new
+                        {
+                            Id = 34,
+                            Keyword = "Buyback"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Keyword = "Ward"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Keyword = "Threshold"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Keyword = "Foretell"
+                        },
+                        new
+                        {
+                            Id = 38,
+                            Keyword = "Fuse"
+                        },
+                        new
+                        {
+                            Id = 39,
+                            Keyword = "Cumulative upkeep"
+                        },
+                        new
+                        {
+                            Id = 40,
+                            Keyword = "Deathtouch"
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Keyword = "Flash"
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Keyword = "Explore"
+                        },
+                        new
+                        {
+                            Id = 43,
+                            Keyword = "Suspend"
+                        },
+                        new
+                        {
+                            Id = 44,
+                            Keyword = "Exploit"
+                        },
+                        new
+                        {
+                            Id = 45,
+                            Keyword = "Megamorph"
+                        },
+                        new
+                        {
+                            Id = 46,
+                            Keyword = "Ferocious"
+                        },
+                        new
+                        {
+                            Id = 47,
+                            Keyword = "Basic landcycling"
+                        },
+                        new
+                        {
+                            Id = 48,
+                            Keyword = "Fight"
+                        },
+                        new
+                        {
+                            Id = 49,
+                            Keyword = "Double strike"
+                        },
+                        new
+                        {
+                            Id = 50,
+                            Keyword = "Infect"
+                        },
+                        new
+                        {
+                            Id = 51,
+                            Keyword = "Channel"
+                        },
+                        new
+                        {
+                            Id = 52,
+                            Keyword = "Bestow"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Keyword = "Devoid"
+                        },
+                        new
+                        {
+                            Id = 54,
+                            Keyword = "Protection"
+                        },
+                        new
+                        {
+                            Id = 55,
+                            Keyword = "Typecycling"
+                        },
+                        new
+                        {
+                            Id = 56,
+                            Keyword = "Split second"
+                        });
                 });
 
             modelBuilder.Entity("PSCHD.Model.MultiverseId", b =>
@@ -476,7 +1055,7 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int?>("MagicCardId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("multiVerseId")
@@ -484,7 +1063,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("MagicCardId");
 
                     b.ToTable("MultiverseIds");
                 });
@@ -498,7 +1077,7 @@ namespace PSCHD.DB.Migrations
                     b.Property<int?>("FinishId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int?>("MagicCardId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Price")
@@ -508,13 +1087,15 @@ namespace PSCHD.DB.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("datetime")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FinishId");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("MagicCardId");
 
                     b.ToTable("Prices");
                 });
@@ -525,7 +1106,7 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ParentId")
+                    b.Property<int?>("MagicCardId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Source")
@@ -536,7 +1117,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("MagicCardId");
 
                     b.ToTable("RelatedUris");
                 });
@@ -671,6 +1252,21 @@ namespace PSCHD.DB.Migrations
                     b.Navigation("MagicColorIdentity");
                 });
 
+            modelBuilder.Entity("PSCHD.Model.MagicCardGame", b =>
+                {
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
+                        .WithMany("games")
+                        .HasForeignKey("MagicCardId");
+
+                    b.HasOne("PSCHD.Model.MagicGame", "MagicGame")
+                        .WithMany()
+                        .HasForeignKey("MagicGameId");
+
+                    b.Navigation("MagicCard");
+
+                    b.Navigation("MagicGame");
+                });
+
             modelBuilder.Entity("PSCHD.Model.MagicCardKeyword", b =>
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
@@ -695,20 +1291,13 @@ namespace PSCHD.DB.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.MagicGame", b =>
-                {
-                    b.HasOne("PSCHD.Model.MagicCard", null)
-                        .WithMany("games")
-                        .HasForeignKey("MagicCardId");
-                });
-
             modelBuilder.Entity("PSCHD.Model.MultiverseId", b =>
                 {
-                    b.HasOne("PSCHD.Model.MagicCard", "Parent")
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("multiverse_ids")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("MagicCardId");
 
-                    b.Navigation("Parent");
+                    b.Navigation("MagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.Prices", b =>
@@ -717,22 +1306,22 @@ namespace PSCHD.DB.Migrations
                         .WithMany()
                         .HasForeignKey("FinishId");
 
-                    b.HasOne("PSCHD.Model.MagicCard", "Parent")
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("prices")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("MagicCardId");
 
                     b.Navigation("Finish");
 
-                    b.Navigation("Parent");
+                    b.Navigation("MagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.RelatedUris", b =>
                 {
-                    b.HasOne("PSCHD.Model.MagicCard", "Parent")
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("related_uris")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("MagicCardId");
 
-                    b.Navigation("Parent");
+                    b.Navigation("MagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.UserMagicCard", b =>

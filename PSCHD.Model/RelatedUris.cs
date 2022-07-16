@@ -10,6 +10,6 @@ namespace PSCHD.Model
         public virtual int Id { get; set; }
         public virtual string URI { get; set; }
         public virtual string Source { get; set; }
-        public virtual MagicCard Parent { get; set; }
+        public virtual MagicCard MagicCard { get; set; }
     }
 }
