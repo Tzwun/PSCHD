@@ -6,13 +6,19 @@ namespace PSCHD.Model
 {
     public partial class User
     {
+        public User()
+        {
+            ObservableCollection<UserSetting> Settings = new ObservableCollection<UserSetting>();
+            ObservableCollection<MagicCollection> Collections = new ObservableCollection<MagicCollection>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; set; }
 
         public virtual string Name { get; set; }
 
-        public virtual string Password { get; set; } // Verschlüsselt auf Datenbank etc.
+        public virtual string Password { get; set; }
 
         public virtual string Salt { get; set; }
 

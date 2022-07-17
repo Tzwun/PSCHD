@@ -12,6 +12,21 @@ namespace PSCHD.Model
 
     public partial class MagicCard
     {
+
+        public MagicCard()
+        {
+            ObservableCollection<ArtistId> artist_ids = new ObservableCollection<ArtistId>();
+            ObservableCollection<Finish> finishes = new ObservableCollection<Finish>();
+            ObservableCollection<MagicCardColor> colors = new ObservableCollection<MagicCardColor>();
+            ObservableCollection<MagicCardColorIdentity> color_identity = new ObservableCollection<MagicCardColorIdentity>();
+            ObservableCollection<MagicCardKeyword> keywords = new ObservableCollection<MagicCardKeyword>();
+            ObservableCollection<MultiverseId> multiverse_ids = new ObservableCollection<MultiverseId>();
+            ObservableCollection<ImageUris> image_uris = new ObservableCollection<ImageUris>();
+            ObservableCollection<Prices> prices = new ObservableCollection<Prices>();
+            ObservableCollection<RelatedUris> related_uris = new ObservableCollection<RelatedUris>();
+            ObservableCollection<MagicCardGame> games = new ObservableCollection<MagicCardGame>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; set; }

@@ -9,11 +9,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
+using PSCHD.DB;
+using Newtonsoft.Json.Linq;
 
 namespace PSCHD.ViewModels
 {
     public class CardsOverviewViewModel : ViewModelBase, INavigationAware
     {
+        private MagicCardRepository _repository;
+
         private ObservableCollection<MagicCard> _magicCards;
         private IRegionManager _regionManager;
 
@@ -38,17 +42,22 @@ namespace PSCHD.ViewModels
 
         private async Task<ObservableCollection<MagicCard>> LoadMagicCards()
         {
+            _repository = new MagicCardRepository();
             var _result = new ObservableCollection<MagicCard>();
 
-            using (StreamReader sr = new StreamReader(@"C:\Users\z004djnf\Downloads\all-cards-20220406091252.json"))
+            using (StreamReader sr = new StreamReader(@"C:\Users\z004djnf\Downloads\all-cards-20220406091252_All.json"))
             {
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
                     await Task.Run(() =>
                     {
-                        foreach (var item in JsonConvert.DeserializeObject<MagicCards>(sr.ReadToEnd()))
+                        while (reader.Read())
                         {
-                            _result.Add(item);
+                            if (reader.TokenType == JsonToken.StartObject)
+                            {
+                                JObject obj = JObject.Load(reader);
+                                _repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
+                            }
                         }
                     });
                 }
