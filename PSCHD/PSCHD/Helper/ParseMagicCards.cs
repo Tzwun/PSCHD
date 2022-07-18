@@ -8,11 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
+using System.Globalization;
+using PSCHD.DB;
 
 namespace PSCHD
 {
     public static class ParseMagicCards
     {
+        private static MagicCardRepository _repository;
         private static MagicCard _card;
         public static MagicCard Parse(RawMagicCard rawMagicCard)
         {
@@ -73,8 +76,9 @@ namespace PSCHD
             return result;
         }
 
-        public static MagicCard Parse(JObject obj)
+        public static MagicCard Parse(JObject obj, MagicCardRepository repository)
         {
+            _repository = repository;
             _card = new MagicCard();
 
             foreach (var item in obj.Properties())
@@ -256,7 +260,7 @@ namespace PSCHD
                         _card.keywords = retrieveKeywords(item, obj);
                         break;
                     case "artist_ids":
-                        _card.artist_ids = retrieveArtistIds(item, obj);
+                        _card.CardArtistsIds = retrieveArtistIds(item, obj);
                         break;
                     case "multiverse_ids":
                         _card.multiverse_ids = retrieveMultiverseIds(item, obj);
@@ -278,114 +282,496 @@ namespace PSCHD
         private static ObservableCollection<RelatedMagicCard> retrieveRelatedCards(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<RelatedMagicCard>();
+
+            var finishes = _repository.GetAvailableFinishes();
+
+            foreach (var item in obj["all_parts"])
+            {
+                result.Add(new RelatedMagicCard { relatedCardID = item["id"].Value<string>() });
+            }
+
             return result;
         }
 
         private static ObservableCollection<ImageUris> retrieveImageUris(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<ImageUris>();
+
+            foreach (JProperty item in obj["image_uris"])
+            {
+                if (item.Name == "small" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.small,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+                if (item.Name == "art_crop" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.art_crop,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+                if (item.Name == "border_crop" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.border_crop,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+                if (item.Name == "large" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.large,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+                if (item.Name == "png" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.png,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+                if (item.Name == "normal" && item.First.Value<string>() != null)
+                {
+                    result.Add(new ImageUris
+                    {
+                        ImageSize = ImageSize.normal,
+                        URI = item.First.Value<string>(),
+                        Parent = _card
+                    });
+                }
+            }
             return result;
         }
 
         private static ObservableCollection<MultiverseId> retrieveMultiverseIds(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<MultiverseId>();
+
+            foreach (var item in obj["multiverse_ids"].Values<int>())
+            {
+                result.Add(new MultiverseId
+                {
+                    multiVerseId = item.ToString(),
+                    MagicCard = _card
+                });
+            }
             return result;
         }
 
-        private static ObservableCollection<ArtistId> retrieveArtistIds(JProperty prop, JObject obj)
+        private static ObservableCollection<CardArtistsId> retrieveArtistIds(JProperty prop, JObject obj)
         {
-            var result = new ObservableCollection<ArtistId>();
+            var result = new ObservableCollection<CardArtistsId>();
+            foreach (var item in obj["artist_ids"].Values<string>())
+            {
+                if (item != null)
+                {
+                    ArtistId artistId = _repository.RetrieveArtistId(item);
+                    if (artistId == null)
+                    {
+                        artistId = new ArtistId { artistId = item };
+                    }
+
+                    result.Add(new CardArtistsId
+                    {
+                        ArtistId = artistId,
+                        MagicCard = _card
+                    });
+                }
+            }
             return result;
         }
 
         private static ObservableCollection<MagicCardKeyword> retrieveKeywords(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<MagicCardKeyword>();
+            foreach (var item in obj["keywords"].Values<string>())
+            {
+                if (item != null)
+                {
+                    MagicKeyword magicKeyword = _repository.RetrieveKeyword(item);
+                    if (magicKeyword == null)
+                    {
+                        magicKeyword = new MagicKeyword { Keyword = item };
+                    }
+
+                    result.Add(new MagicCardKeyword
+                    {
+                        keyword = magicKeyword,
+                        MagicCard = _card
+                    });
+                }
+            }
             return result;
         }
 
         private static ObservableCollection<MagicCardColorIdentity> retrieveColorIdentity(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<MagicCardColorIdentity>();
+
+            foreach (var item in obj["color_identity"].Values<char>())
+            {
+                MagicColorIdentity magicColorIdentity = _repository.RetrieveColorIdentity(item);
+
+                result.Add(new MagicCardColorIdentity
+                {
+                    MagicColorIdentity = magicColorIdentity,
+                    MagicCard = _card
+                });
+            }
             return result;
         }
 
         private static ObservableCollection<MagicCardColor> retrieveColors(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<MagicCardColor>();
+
+            foreach (var item in obj["colors"].Values<char>())
+            {
+                MagicColor magicColor = _repository.RetrieveColor(item);
+
+                result.Add(new MagicCardColor
+                {
+                    Color = magicColor,
+                    MagicCard = _card
+                });
+            }
+
             return result;
         }
 
         private static ObservableCollection<RelatedUris> retrieveRelatedUris(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<RelatedUris>();
+
+            foreach (JProperty item in obj["related_uris"])
+            {
+                if (item.First.Value<string>() != null)
+                {
+                    result.Add(new RelatedUris
+                    {
+                        Source = item.Name,
+                        URI = item.First.Value<string>(),
+                        MagicCard = _card
+                    });
+                }
+            }
             return result;
         }
 
-        private static ObservableCollection<Finish> retrieveFinishes(JProperty prop, JObject obj)
+        private static ObservableCollection<CardFinish> retrieveFinishes(JProperty prop, JObject obj)
         {
-            var result = new ObservableCollection<Finish>();
+            var result = new ObservableCollection<CardFinish>();
+
+            foreach (var item in obj["finishes"].Values<string>())
+            {
+                if (item != null)
+                {
+                    Finish cardFinish = _repository.RetrieveFinish(item);
+                    if (cardFinish == null)
+                    {
+                        cardFinish = new Finish { finish = item };
+                    }
+
+                    result.Add(new CardFinish
+                    {
+                        Finish = cardFinish,
+                        MagicCard = _card
+                    });
+                }
+            }
             return result;
         }
 
         private static ObservableCollection<MagicCardGame> retrieveGames(JProperty prop, JObject obj)
         {
             var result = new ObservableCollection<MagicCardGame>();
+            foreach (var item in obj["games"].Values<string>())
+            {
+                if (item != null)
+                {
+                    MagicGame magicGame = _repository.RetrieveGame(item);
+                    if (magicGame == null)
+                    {
+                        magicGame = new MagicGame { magicGame = item };
+                    }
+
+                    result.Add(new MagicCardGame
+                    {
+                        MagicGame = magicGame,
+                        MagicCard = _card
+                    });
+                }
+            }
             return result;
         }
 
         private static Legalities retrieveLegalities(JProperty prop, JObject obj)
         {
             var result = new Legalities();
+
+            foreach (JProperty item in obj["legalities"])
+            {
+                if (item.Name == "pauper" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.pauper = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.pauper = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "legacy" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.legacy = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.legacy = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "premodern" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.premodern = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.premodern = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "commander" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.commander = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.commander = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "paupercommander" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.paupercommander = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.paupercommander = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "duel" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.duel = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.duel = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "alchemy" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.alchemy = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.alchemy = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "brawl" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.brawl = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.brawl = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "future" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.future = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.future = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "gladiator" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.gladiator = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.gladiator = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "historic" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.historic = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.historic = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "historicbrawl" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.historicbrawl = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.historicbrawl = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "oldschool" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.oldschool = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.oldschool = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "penny" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.penny = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.penny = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "pioneer" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.pioneer = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.pioneer = Legality.legal;
+                    }
+                }
+
+                if (item.Name == "vintage" && item.First.Value<string>() != null)
+                {
+                    if (item.First.Value<string>() == Legality.not_legal.ToString())
+                    {
+                        result.vintage = Legality.not_legal;
+                    }
+                    else
+                    {
+                        result.vintage = Legality.legal;
+                    }
+                }
+            }
             return result;
         }
 
         private static ObservableCollection<Prices> retrievePrices(JProperty prop, JObject obj)
         {
+            var finishes = _repository.GetAvailableFinishes();
             var result = new ObservableCollection<Prices>();
-            //foreach (var item in obj.Values("prices"))
-            //{
-            //    if (item.Values<string>("usd") != null)
-            //    {
-            //        result.Add(new Prices
-            //        {
-            //            currency = "usd",
-            //            Price = decimal.Parse(item.Value<string>("usd")),
-            //            MagicCard = _card,
-            //        });
-            //    }
 
-            //    if (item.Values<string>("usd_foil") != null)
-            //    {
-            //        result.Add(new Prices
-            //        {
-            //            currency = "usd",
-            //            Price = decimal.Parse(item.Value<string>("usd_foil")),
-            //            MagicCard = _card,
-            //        });
-            //    }
-
-            //    if (item.Values<string>("eur") != null)
-            //    {
-            //        result.Add(new Prices
-            //        {
-            //            currency = "eur",
-            //            Price = decimal.Parse(item.Value<string>("eur")),
-            //            MagicCard = _card,
-            //        });
-            //    }
-
-            //    if (item.Values<string>("eur_foil") != null)
-            //    {
-            //        result.Add(new Prices
-            //        {
-            //            currency = "eur",
-            //            Price = decimal.Parse(item.Value<string>("eur_foil")),
-            //            MagicCard = _card,
-            //        });
-            //    }
-            //}
+            foreach (JProperty item in obj[prop.Name])
+            {
+                if (item.Name == "usd" && item.First.Value<string>() != null)
+                {
+                    result.Add(new Prices
+                    {
+                        currency = "usd",
+                        Price = decimal.Parse(item.First.Value<string>(), CultureInfo.InvariantCulture),
+                        datetime = DateTime.UtcNow,
+                        MagicCard = _card,
+                        Finish = finishes.Single(e => e.Id == 1)
+                    });
+                }
+                if (item.Name == "usd_foil" && item.First.Value<string>() != null)
+                {
+                    result.Add(new Prices
+                    {
+                        currency = "usd",
+                        Price = decimal.Parse(item.First.Value<string>(), CultureInfo.InvariantCulture),
+                        datetime = DateTime.UtcNow,
+                        MagicCard = _card,
+                        Finish = finishes.Single(e => e.Id == 2)
+                    });
+                }
+                if (item.Name == "eur" && item.First.Value<string>() != null)
+                {
+                    result.Add(new Prices
+                    {
+                        currency = "eur",
+                        Price = decimal.Parse(item.First.Value<string>(), CultureInfo.InvariantCulture),
+                        datetime = DateTime.UtcNow,
+                        MagicCard = _card,
+                        Finish = finishes.Single(e => e.Id == 1)
+                    });
+                }
+                if (item.Name == "eur_foil" && item.First.Value<string>() != null)
+                {
+                    result.Add(new Prices
+                    {
+                        currency = "eur",
+                        Price = decimal.Parse(item.First.Value<string>(), CultureInfo.InvariantCulture),
+                        datetime = DateTime.UtcNow,
+                        MagicCard = _card,
+                        Finish = finishes.Single(e => e.Id == 2)
+                    });
+                }
+            }
             return result;
         }
     }

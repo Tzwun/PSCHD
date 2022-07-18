@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PSCHD.DB;
 
@@ -10,9 +11,10 @@ using PSCHD.DB;
 namespace PSCHD.DB.Migrations
 {
     [DbContext(typeof(PSCHD_Context))]
-    partial class PSCHD_ContextModelSnapshot : ModelSnapshot
+    [Migration("20220718201945_V7")]
+    partial class V7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");

@@ -32,5 +32,40 @@ namespace PSCHD.DB
         {
             return context.MagiCards.ToListAsync();
         }
+
+        public List<Finish> GetAvailableFinishes()
+        {
+            return context.Finishes.ToList();
+        }
+
+        public ArtistId RetrieveArtistId(string artistId)
+        {
+            return context.ArtistIDs.SingleOrDefault(e => e.artistId == artistId);
+        }
+
+        public MagicKeyword RetrieveKeyword(string keyword)
+        {
+            return context.Keywords.SingleOrDefault(e => e.Keyword == keyword);
+        }
+
+        public MagicColorIdentity RetrieveColorIdentity(char colorIdentity)
+        {
+            return context.Colors_Identity.SingleOrDefault(e => e.magicColorIdentity == colorIdentity);
+        }
+
+        public MagicColor RetrieveColor(char magicColor)
+        {
+            return context.Colors.SingleOrDefault(e => e.magicColor == magicColor);
+        }
+
+        public Finish RetrieveFinish(string finish)
+        {
+            return context.Finishes.SingleOrDefault(e => e.finish == finish);
+        }
+
+        public MagicGame RetrieveGame(string game)
+        {
+            return context.MagicGames.SingleOrDefault(e => e.magicGame == game);
+        }
     }
 }

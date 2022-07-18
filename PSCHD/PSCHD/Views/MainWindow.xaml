@@ -18,7 +18,9 @@
         WindowStyle="SingleBorderWindow"
         ShowTitleBar="True"
         Height="1080" Width="1920"
+        
         WindowTitleBrush="{DynamicResource PrimaryHueDarkBrush}">
+
     <i:Interaction.Behaviors>
         <metroBehaviour:BorderlessWindowBehavior/>
     </i:Interaction.Behaviors>

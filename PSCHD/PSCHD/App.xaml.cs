@@ -39,10 +39,10 @@ namespace PSCHD
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IMessageService, MessageService>();
-            //containerRegistry.RegisterSingleton<IRegionManager, RegionManager>();
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewViewModel>(typeof(SettingsView).FullName);
             containerRegistry.RegisterForNavigation<ThemeSettings, ThemeSettingsViewModel>(typeof(ThemeSettings).FullName);
             containerRegistry.RegisterForNavigation<CardsOverview, CardsOverviewViewModel>(typeof(CardsOverview).FullName);
+            containerRegistry.RegisterDialog<LoginView, LoginViewModel>(typeof(LoginView).FullName);
 
         }
 

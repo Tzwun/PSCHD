@@ -82,8 +82,8 @@ namespace PSCHD.Model
         public virtual bool story_spotlight { get; set; }
         public virtual int edhrec_rank { get; set; }
 
-        public virtual ObservableCollection<ArtistId> artist_ids { get; set; }
-        public virtual ObservableCollection<Finish> finishes { get; set; }
+        public virtual ObservableCollection<CardArtistsId> CardArtistsIds { get; set; }
+        public virtual ObservableCollection<CardFinish> finishes { get; set; }
         public virtual ObservableCollection<MagicCardColor> colors { get; set; }
         public virtual ObservableCollection<MagicCardColorIdentity> color_identity { get; set; }
         public virtual ObservableCollection<MagicCardKeyword> keywords { get; set; }

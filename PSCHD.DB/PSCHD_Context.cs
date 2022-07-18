@@ -140,6 +140,11 @@ namespace PSCHD.DB
                 new MagicGame { Id = 1, magicGame = "paper" },
                 new MagicGame { Id = 2, magicGame = "arena" },
                 new MagicGame { Id = 3, magicGame = "mtgo" });
+
+            modelBuilder.Entity<Finish>().HasData(
+                new Finish { Id = 1, finish = "nonfoil" },
+                new Finish { Id = 2, finish = "foil" }
+                );
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -158,7 +163,7 @@ namespace PSCHD.DB
         public DbSet<MagicColor> Colors { get; set; }
         public DbSet<MagicColorIdentity> Colors_Identity { get; set; }
         public DbSet<MultiverseId> MultiverseIds { get; set; }
-        public DbSet<MagicCardKeyword> Keywords { get; set; }
+        public DbSet<MagicKeyword> Keywords { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserMagicCard> UserMagicCards { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
@@ -168,5 +173,7 @@ namespace PSCHD.DB
         public DbSet<MagicCardColorIdentity> MagicCardColorIdentities { get; set; }
         public DbSet<MagicCardKeyword> MagicCardKeywords { get; set; }
         public DbSet<MagicCardGame> MagicCardGames { get; set; }
+        public DbSet<CardFinish> CardFinishes { get; set; }
+        public DbSet<CardArtistsId> CardArtistsId { get; set; }
     }
 }

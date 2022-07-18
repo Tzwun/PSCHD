@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PSCHD.DB;
 
@@ -10,9 +11,10 @@ using PSCHD.DB;
 namespace PSCHD.DB.Migrations
 {
     [DbContext(typeof(PSCHD_Context))]
-    partial class PSCHD_ContextModelSnapshot : ModelSnapshot
+    [Migration("20220718181541_V4")]
+    partial class V4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -37,33 +39,17 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("MagicCardId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("artistId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ArtistIDs");
-                });
-
-            modelBuilder.Entity("PSCHD.Model.CardArtistsId", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ArtistIdId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArtistIdId");
-
                     b.HasIndex("MagicCardId");
 
-                    b.ToTable("CardArtistsId");
+                    b.ToTable("ArtistIDs");
                 });
 
             modelBuilder.Entity("PSCHD.Model.CardFinish", b =>
@@ -453,7 +439,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasIndex("keywordId");
 
-                    b.ToTable("MagicCardKeywords");
+                    b.ToTable("MagicCardKeyword");
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicCollection", b =>
@@ -809,7 +795,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Keywords");
+                    b.ToTable("MagicKeyword");
 
                     b.HasData(
                         new
@@ -1252,19 +1238,11 @@ namespace PSCHD.DB.Migrations
                     b.ToTable("UserSettings");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.CardArtistsId", b =>
+            modelBuilder.Entity("PSCHD.Model.ArtistId", b =>
                 {
-                    b.HasOne("PSCHD.Model.ArtistId", "ArtistId")
-                        .WithMany()
-                        .HasForeignKey("ArtistIdId");
-
-                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
-                        .WithMany("CardArtistsIds")
+                    b.HasOne("PSCHD.Model.MagicCard", null)
+                        .WithMany("artist_ids")
                         .HasForeignKey("MagicCardId");
-
-                    b.Navigation("ArtistId");
-
-                    b.Navigation("MagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.CardFinish", b =>
@@ -1439,7 +1417,7 @@ namespace PSCHD.DB.Migrations
 
             modelBuilder.Entity("PSCHD.Model.MagicCard", b =>
                 {
-                    b.Navigation("CardArtistsIds");
+                    b.Navigation("artist_ids");
 
                     b.Navigation("color_identity");
 

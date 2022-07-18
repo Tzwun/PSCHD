@@ -60,7 +60,7 @@ namespace PSCHD.ViewModels
                             {
                                 JObject obj = JObject.Load(reader);
                                 //_repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
-                                _repository.SaveNewCard(ParseMagicCards.Parse(obj));
+                                _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
                             }
                         }
                     });

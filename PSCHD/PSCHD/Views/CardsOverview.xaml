@@ -44,7 +44,7 @@
                                 </DockPanel>
                             </GroupBox.Header>
                             <StackPanel>
-                                <Image Source="{Binding image_uris.border_crop}"/>
+                                <Image DataContext="{Binding image_uris}" Source="{Binding border_crop}"/>
                                 <Separator/>
                                 <TextBlock Text="{Binding flavor_text}" TextWrapping="Wrap"/>
                                 <Separator/>
