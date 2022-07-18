@@ -93,6 +93,7 @@ namespace PSCHD.Model
         public virtual ObservableCollection<Prices> prices { get; set; }
         public virtual ObservableCollection<RelatedUris> related_uris { get; set; }
         public virtual ObservableCollection<MagicCardGame> games { get; set; }
+        public virtual ObservableCollection<RelatedMagicCard> relatedCards { get; set; }
 
     }
 }

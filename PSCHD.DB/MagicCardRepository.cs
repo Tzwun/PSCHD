@@ -1,4 +1,5 @@
-﻿using PSCHD.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using PSCHD.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,16 @@ namespace PSCHD.DB
         {
             context.MagiCards.Add(magicCard);
             context.SaveChanges();
+        }
+
+        public List<MagicCard> GetAllCards()
+        {
+            return context.MagiCards.ToList();
+        }
+
+        public Task<List<MagicCard>> GetAllCardsAsync()
+        {
+            return context.MagiCards.ToListAsync();
         }
     }
 }

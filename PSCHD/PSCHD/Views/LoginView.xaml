@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="PSCHD.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:PSCHD.Views"
+             mc:Ignorable="d" 
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextHintingMode="Animated"
+             TextOptions.TextRenderingMode="Auto"
+             FontFamily="{StaticResource MaterialDesignFont}"
+             Background="{DynamicResource MaterialDesignPaper}"
+             Width="400"
+             Height="300">
+    <Grid Margin="16"  HorizontalAlignment="Stretch">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="80"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="0,16" FontSize="36" Text="Login"/>
+        <DockPanel  Grid.Row="1" HorizontalAlignment="Stretch">
+            <wpf:PackIcon Kind="Account" Foreground="{Binding ElementName=UsernameBox, Path=BorderBrush}" VerticalAlignment="Bottom" Margin="0,0,2,9" HorizontalAlignment="Right" />
+            <TextBox x:Name="UsernameBox" wpf:HintAssist.Hint="Benutzername" FontSize="18" HorizontalAlignment="Stretch" Cursor="Arrow">
+                <TextBox.Text>
+                    <Binding Path="PeNr" UpdateSourceTrigger="PropertyChanged">
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </DockPanel>
+        <DockPanel Grid.Row="2"  HorizontalAlignment="Stretch">
+            <wpf:PackIcon Kind="Key" Foreground="{Binding ElementName=PasswordBox, Path=BorderBrush}" VerticalAlignment="Bottom" Margin="0,0,2,9" HorizontalAlignment="Right" />
+            <PasswordBox 		
+                     x:Name="PasswordBox"
+                     FontSize="18" HorizontalAlignment="Stretch"/>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="3"
+                    Margin="0 16 0 0">
+            <Button IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AcceptCommand}" CommandParameter="{Binding ElementName=PasswordBox}" Content="OK"/>
+            <Button IsCancel="True" Content="Abbrechen" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}">
+                <!--Command="{Binding CancelCommand}">-->
+
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

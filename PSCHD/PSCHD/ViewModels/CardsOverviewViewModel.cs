@@ -28,6 +28,8 @@ namespace PSCHD.ViewModels
         }
 
         private NotifyTaskCompletion<ObservableCollection<MagicCard>> _loadCardsTask;
+        private long _filesize;
+
         public NotifyTaskCompletion<ObservableCollection<MagicCard>> LoadCardsTask
 
         {
@@ -40,15 +42,16 @@ namespace PSCHD.ViewModels
             _regionManager = regionManager;
         }
 
-        private async Task<ObservableCollection<MagicCard>> LoadMagicCards()
+        private async Task<ObservableCollection<MagicCard>> LoadMagicCards(string filePath)
         {
             _repository = new MagicCardRepository();
             var _result = new ObservableCollection<MagicCard>();
 
-            using (StreamReader sr = new StreamReader(@"C:\Users\z004djnf\Downloads\all-cards-20220406091252_All.json"))
+            using (StreamReader sr = new StreamReader(filePath))
             {
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
+                    _filesize = sr.BaseStream.Length;
                     await Task.Run(() =>
                     {
                         while (reader.Read())
@@ -56,18 +59,23 @@ namespace PSCHD.ViewModels
                             if (reader.TokenType == JsonToken.StartObject)
                             {
                                 JObject obj = JObject.Load(reader);
-                                _repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
+                                //_repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
+                                _repository.SaveNewCard(ParseMagicCards.Parse(obj));
                             }
                         }
                     });
                 }
             }
-            return _result;
+            return (ObservableCollection<MagicCard>)_result.AddRange(await _repository.GetAllCardsAsync());
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards());
+            if (navigationContext.Parameters.Count != 0)
+            {
+                var filePath = navigationContext.Parameters.GetValue<string>("filePath");
+                LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards(filePath));
+            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

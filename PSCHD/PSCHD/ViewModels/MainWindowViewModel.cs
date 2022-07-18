@@ -1,8 +1,10 @@
-﻿using Prism.Commands;
+﻿using MaterialDesignExtensions.Controls;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using PSCHD.Core;
 using PSCHD.Views;
+using System;
 
 namespace PSCHD.ViewModels
 {
@@ -31,9 +33,25 @@ namespace PSCHD.ViewModels
         public DelegateCommand LoadCards_Command =>
             _loadCards ?? (_loadCards = new DelegateCommand(ExecuteLoadCards_Command, () => true));
 
-        void ExecuteLoadCards_Command()
+        async void ExecuteLoadCards_Command()
         {
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(CardsOverview).FullName);
+            OpenFileDialogArguments fileDialogArguments = new OpenFileDialogArguments
+            {
+                Height = 500,
+                Width = 750,
+                Filters = "Json Files | *.json",
+                SwitchPathPartsAsButtonsEnabled = true,
+                CurrentDirectory = $"{Environment.SpecialFolder.Desktop}",
+                ShowHiddenFilesAndDirectories = false,
+                ShowSystemFilesAndDirectories = false
+            };
+            OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync("RootDialog", fileDialogArguments);
+            if (fileResults.Confirmed && fileResults.File != null)
+            {
+                NavigationParameters navigationParameters = new NavigationParameters();
+                navigationParameters.Add("filePath", fileResults.File);
+                _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(CardsOverview).FullName, navigationParameters);
+            }
         }
 
 

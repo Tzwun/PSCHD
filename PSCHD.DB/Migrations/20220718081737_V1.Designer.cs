@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PSCHD.DB;
 
@@ -10,9 +11,10 @@ using PSCHD.DB;
 namespace PSCHD.DB.Migrations
 {
     [DbContext(typeof(PSCHD_Context))]
-    partial class PSCHD_ContextModelSnapshot : ModelSnapshot
+    [Migration("20220718081737_V1")]
+    partial class V1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
@@ -1101,25 +1103,6 @@ namespace PSCHD.DB.Migrations
                     b.ToTable("Prices");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.RelatedMagicCard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("relatedCardID")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MagicCardId");
-
-                    b.ToTable("RelatedMagicCard");
-                });
-
             modelBuilder.Entity("PSCHD.Model.RelatedUris", b =>
                 {
                     b.Property<int>("Id")
@@ -1335,13 +1318,6 @@ namespace PSCHD.DB.Migrations
                     b.Navigation("MagicCard");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.RelatedMagicCard", b =>
-                {
-                    b.HasOne("PSCHD.Model.MagicCard", null)
-                        .WithMany("relatedCards")
-                        .HasForeignKey("MagicCardId");
-                });
-
             modelBuilder.Entity("PSCHD.Model.RelatedUris", b =>
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
@@ -1398,8 +1374,6 @@ namespace PSCHD.DB.Migrations
                     b.Navigation("multiverse_ids");
 
                     b.Navigation("prices");
-
-                    b.Navigation("relatedCards");
 
                     b.Navigation("related_uris");
                 });
