@@ -25,12 +25,12 @@ namespace PSCHD.DB
 
         public List<MagicCard> GetAllCards()
         {
-            return context.MagiCards.ToList();
+            return context.MagiCards.Include(e => e.image_uris).ToList();
         }
 
         public Task<List<MagicCard>> GetAllCardsAsync()
         {
-            return context.MagiCards.ToListAsync();
+            return context.MagiCards.Include(e => e.image_uris).ToListAsync();
         }
 
         public List<Finish> GetAvailableFinishes()

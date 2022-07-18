@@ -47,35 +47,35 @@ namespace PSCHD.ViewModels
             _repository = new MagicCardRepository();
             var _result = new ObservableCollection<MagicCard>();
 
-            using (StreamReader sr = new StreamReader(filePath))
-            {
-                using (JsonReader reader = new JsonTextReader(sr))
-                {
-                    _filesize = sr.BaseStream.Length;
-                    await Task.Run(() =>
-                    {
-                        while (reader.Read())
-                        {
-                            if (reader.TokenType == JsonToken.StartObject)
-                            {
-                                JObject obj = JObject.Load(reader);
-                                //_repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
-                                _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
-                            }
-                        }
-                    });
-                }
-            }
+            //using (StreamReader sr = new StreamReader(filePath))
+            //{
+            //    using (JsonReader reader = new JsonTextReader(sr))
+            //    {
+            //        _filesize = sr.BaseStream.Length;
+            //        await Task.Run(() =>
+            //        {
+            //            while (reader.Read())
+            //            {
+            //                if (reader.TokenType == JsonToken.StartObject)
+            //                {
+            //                    JObject obj = JObject.Load(reader);
+            //                    //_repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
+            //                    _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
+            //                }
+            //            }
+            //        });
+            //    }
+            //}
             return (ObservableCollection<MagicCard>)_result.AddRange(await _repository.GetAllCardsAsync());
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.Count != 0)
-            {
-                var filePath = navigationContext.Parameters.GetValue<string>("filePath");
-                LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards(filePath));
-            }
+            //if (navigationContext.Parameters.Count != 0)
+            //{
+            //    var filePath = navigationContext.Parameters.GetValue<string>("filePath");
+            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards(""));//filePath));
+            //}
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

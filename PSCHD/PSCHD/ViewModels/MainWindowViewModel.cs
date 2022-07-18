@@ -35,23 +35,23 @@ namespace PSCHD.ViewModels
 
         async void ExecuteLoadCards_Command()
         {
-            OpenFileDialogArguments fileDialogArguments = new OpenFileDialogArguments
-            {
-                Height = 500,
-                Width = 750,
-                Filters = "Json Files | *.json",
-                SwitchPathPartsAsButtonsEnabled = true,
-                CurrentDirectory = $"{Environment.SpecialFolder.Desktop}",
-                ShowHiddenFilesAndDirectories = false,
-                ShowSystemFilesAndDirectories = false
-            };
-            OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync("RootDialog", fileDialogArguments);
-            if (fileResults.Confirmed && fileResults.File != null)
-            {
-                NavigationParameters navigationParameters = new NavigationParameters();
-                navigationParameters.Add("filePath", fileResults.File);
-                _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(CardsOverview).FullName, navigationParameters);
-            }
+            //OpenFileDialogArguments fileDialogArguments = new OpenFileDialogArguments
+            //{
+            //    Height = 500,
+            //    Width = 750,
+            //    Filters = "Json Files | *.json",
+            //    SwitchPathPartsAsButtonsEnabled = true,
+            //    CurrentDirectory = $"{Environment.SpecialFolder.Desktop}",
+            //    ShowHiddenFilesAndDirectories = false,
+            //    ShowSystemFilesAndDirectories = false
+            //};
+            //OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync("RootDialog", fileDialogArguments);
+            //if (fileResults.Confirmed && fileResults.File != null)
+            //{
+            //    NavigationParameters navigationParameters = new NavigationParameters();
+            //    navigationParameters.Add("filePath", fileResults.File);
+            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(CardsOverview).FullName); //, navigationParameters);
+            //}
         }
 
 

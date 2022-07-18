@@ -5,15 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PSCHD.Views"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:helper ="clr-namespace:PSCHD.Helper"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:metroBehaviour="http://metro.mahapps.com/winfx/xaml/shared"
              xmlns:core="clr-namespace:PSCHD.Core;assembly=PSCHD.Core"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:design ="clr-namespace:PSCHD.Design"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <helper:ImageSourceConverter x:Key="ImageSourceConverter"/>
+        <system:String x:Key="ImageSize">border_crop</system:String>
+    </UserControl.Resources>
     <Grid d:DataContext="{d:DesignInstance design:CardsOverviewDesign, IsDesignTimeCreatable=True}">
         <!--<ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="80" IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Visibility="Visible"/>-->
         <ListBox ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}">
@@ -44,7 +50,7 @@
                                 </DockPanel>
                             </GroupBox.Header>
                             <StackPanel>
-                                <Image DataContext="{Binding image_uris}" Source="{Binding border_crop}"/>
+                                <Image Source="{Binding image_uris, Converter={StaticResource ImageSourceConverter}, ConverterParameter={StaticResource ImageSize }}"/>
                                 <Separator/>
                                 <TextBlock Text="{Binding flavor_text}" TextWrapping="Wrap"/>
                                 <Separator/>
