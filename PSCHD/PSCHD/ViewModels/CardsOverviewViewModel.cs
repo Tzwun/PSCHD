@@ -15,6 +15,7 @@ using Unity;
 using Prism.Commands;
 using MaterialDesignExtensions.Controls;
 using System;
+using System.ComponentModel;
 
 namespace PSCHD.ViewModels
 {
@@ -22,7 +23,12 @@ namespace PSCHD.ViewModels
     {
         private MagicCardRepository _repository;
 
-        private ObservableCollection<MagicCard> _magicCards;
+        //private ObservableCollection<MagicCard> _magicCards;
+        //public ObservableCollection<MagicCard> MagicCards
+        //{
+        //    get { return _magicCards; }
+        //    set { SetProperty(ref _magicCards, value); }
+        //}
 
         private bool _isImporting;
         public bool IsImporting
@@ -37,14 +43,8 @@ namespace PSCHD.ViewModels
             _repository = new MagicCardRepository();
         }
 
-        public ObservableCollection<MagicCard> MagicCards
-        {
-            get { return _magicCards; }
-            set { SetProperty(ref _magicCards, value); }
-        }
 
         private NotifyTaskCompletion<ObservableCollection<MagicCard>> _loadCardsTask;
-
         public NotifyTaskCompletion<ObservableCollection<MagicCard>> LoadCardsTask
 
         {
@@ -52,16 +52,35 @@ namespace PSCHD.ViewModels
             set { SetProperty(ref _loadCardsTask, value); }
         }
 
+        private NotifyTaskCompletion<List<string>> _loadLangTask;
+        public NotifyTaskCompletion<List<string>> LoadLangTask
+        {
+            get { return _loadLangTask; }
+            set { SetProperty(ref _loadLangTask, value); }
+        }
+
+        public bool ShowContent
+        {
+            get
+            {
+                if (LoadCardsTask != null)
+                {
+                    return LoadCardsTask.IsCompleted && !IsImporting;
+                }
+                return false;
+            }
+        }
+
         private DelegateCommand _importCommand;
         private long _filesize;
         private long _position;
-        public double ImportProgress
+        public int ImportProgress
         {
             get
             {
                 if (_filesize != 0)
                 {
-                    return (_filesize - _position) / _filesize;
+                    return (int)(_position / _filesize);
                 }
                 else
                 {
@@ -73,6 +92,7 @@ namespace PSCHD.ViewModels
 
         public DelegateCommand ImportCommand =>
             _importCommand ?? (_importCommand = new DelegateCommand(ExecuteImportCommand, () => true));
+
 
         async void ExecuteImportCommand()
         {
@@ -87,22 +107,34 @@ namespace PSCHD.ViewModels
                 ShowSystemFilesAndDirectories = false,
                 PathPartsAsButtons = true,
             };
-            OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync(RegionNames.ContentRegion, fileDialogArguments);
+            OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync(RegionNames.DialogRegion, fileDialogArguments);
             if (fileResults.Confirmed && fileResults.File != null)
             {
                 LoadCardsTask = null;
                 IsImporting = true;
-                ImportCards(fileResults.File);
+                RaisePropertyChanged("ShowContent");
+                await ImportCards(fileResults.File);
                 IsImporting = false;
-                LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards());
-
+                RaisePropertyChanged("ShowContent");
+                LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(Task.Run(() => LoadMagicCards()));
+                LoadCardsTask.PropertyChanged += TaskPropertyChanged;
+                LoadLangTask = new NotifyTaskCompletion<List<string>>(Task.Run(() => LoadLanguages()));
+                RaisePropertyChanged("ShowContent");
             }
         }
 
-        private async void ImportCards(string file)
+        private async Task<List<string>> LoadLanguages()
         {
+            return await _repository.GetAllLanguagesAsync();
+        }
 
+        private void TaskPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged("ShowContent");
+        }
 
+        private async Task ImportCards(string file)
+        {
             using (StreamReader sr = new StreamReader(file))
             {
                 using (JsonReader reader = new JsonTextReader(sr))
@@ -129,16 +161,17 @@ namespace PSCHD.ViewModels
         private async Task<ObservableCollection<MagicCard>> LoadMagicCards()
         {
             var _result = new ObservableCollection<MagicCard>();
-            return (ObservableCollection<MagicCard>)_result.AddRange(await _repository.GetAllCardsAsync());
+            return (ObservableCollection<MagicCard>)_result.AddRange(await (_repository.GetAllCardsAsync()));
         }
 
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
             //if (navigationContext.Parameters.Count != 0)
             //{
             //    var filePath = navigationContext.Parameters.GetValue<string>("filePath");
-            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards());//filePath));
+            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(Task.Run(() => LoadMagicCards()));//filePath));
+            LoadCardsTask.PropertyChanged += TaskPropertyChanged;
             //}
         }
     }

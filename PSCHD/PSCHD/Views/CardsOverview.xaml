@@ -34,7 +34,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" >
-                    <ToggleButton x:Name="Importieren" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10,10,0,10" VerticalAlignment="Top" ToolTip="Reload" Command="{Binding ImportCommand}">
+                    <ToggleButton x:Name="Importieren" IsChecked="{Binding IsImporting}" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10,10,0,10" VerticalAlignment="Top" ToolTip="Reload" Command="{Binding ImportCommand}">
                         <ToggleButton.Content>
                             <material:PackIcon Kind="Import" Height="24" Width="24"/>
                         </ToggleButton.Content>
@@ -47,7 +47,7 @@
                             <material:PackIcon Kind="SortAscending" Height="24" Width="24"/>
                         </material:ToggleButtonAssist.OnContent>
                     </ToggleButton>
-                    <ToggleButton IsChecked="{Binding IsFilterActive}" Width="{Binding ElementName=ReloadButton, Path=Width}" Height="{Binding ElementName=ReloadButton, Path=Height}" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10" VerticalAlignment="Top" ToolTip="Filter Aktivieren">
+                    <ToggleButton IsChecked="{Binding IsFilterActive}" Width="{Binding ElementName=SortingButton, Path=Width}" Height="{Binding ElementName=SortingButton, Path=Height}" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10" VerticalAlignment="Top" ToolTip="Filter Aktivieren">
                         <ToggleButton.Content>
                             <material:PackIcon Kind="FilterRemove" />
                         </ToggleButton.Content>
@@ -93,7 +93,7 @@
         </material:Card>
         <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="80" IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Visibility="{Binding LoadCardsTask.IsNotCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="160" Value="{Binding ImportProgress, Mode=OneWay}" Style="{StaticResource  MaterialDesignLinearProgressBar}" Visibility="{Binding IsImporting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <ListBox Grid.Row="1" ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}" Visibility="{Binding LoadCardsTask.IsSuccessfullyCompleted, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <ListBox Grid.Row="1" ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}" Visibility="{Binding ShowContent, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <core:VirtualizingWrapPanel ChildHeight="650" ChildWidth="380" VirtualizingPanel.CacheLengthUnit="Item" VirtualizingPanel.CacheLength="52" VirtualizingPanel.ScrollUnit="Pixel"/>

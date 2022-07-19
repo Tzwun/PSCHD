@@ -21,6 +21,11 @@ namespace PSCHD.DB
             context = new PSCHD_Context();
         }
 
+        public async Task<List<string>> GetAllLanguagesAsync()
+        {
+            return await context.MagiCards.Select(e => e.lang).Distinct().ToListAsync();
+        }
+
         public void SaveNewCard(MagicCard magicCard)
         {
             if (magicCard != null)

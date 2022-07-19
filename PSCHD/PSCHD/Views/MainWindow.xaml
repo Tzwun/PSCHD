@@ -21,7 +21,6 @@
         WindowStyle="SingleBorderWindow"
         ShowTitleBar="True"
         Height="1080" Width="1920"
-        
         WindowTitleBrush="{DynamicResource PrimaryHueDarkBrush}">
     <metro:MetroWindow.Resources>
         <helper:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
@@ -48,7 +47,7 @@
                     <TextBlock Text="{Binding Title}" FontSize="32" HorizontalAlignment="Center"/>
                     <TextBlock Text="Pascal SCHmidt Database" FontSize="14" HorizontalAlignment="Center"/>
                     <TextBlock Text="Version 1.0.0.0" FontSize="14" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding Uhrzeit}" FontSize="14" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Uhrzeit, ConverterCulture='de-DE'}" FontSize="14" HorizontalAlignment="Center"/>
                 </StackPanel>
             </material:ColorZone>
             <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3" Padding="16,8" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

@@ -27,6 +27,7 @@ namespace PSCHD.ViewModels
 
         private void ExecuteSettings_Command()
         {
+            BreadCrumbList.ClearAll();
             _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(SettingsView).FullName);
         }
 
