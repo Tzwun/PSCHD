@@ -3,6 +3,7 @@ using PSCHD.Core.Mvvm;
 using PSCHD.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Unity;
 
 namespace PSCHD.Design
 {
@@ -11,6 +12,12 @@ namespace PSCHD.Design
         public ObservableCollection<MagicCard> MagicCards
         {
             get { return LoadMagicCards(); }
+        }
+
+        public CardsOverviewDesign(IUnityContainer unityContainer)
+            : base(unityContainer)
+        {
+
         }
 
         public ObservableCollection<MagicCard> LoadMagicCards()

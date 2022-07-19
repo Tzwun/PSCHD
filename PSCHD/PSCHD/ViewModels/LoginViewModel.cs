@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity;
 
 namespace PSCHD.ViewModels
 {
@@ -14,6 +15,12 @@ namespace PSCHD.ViewModels
     {
         private string _userName;
         private LoginView _view;
+
+        public LoginViewModel(IUnityContainer unityContainer)
+            : base(unityContainer)
+        {
+
+        }
 
         public string UserName
         {

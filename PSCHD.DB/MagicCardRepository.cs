@@ -12,6 +12,10 @@ namespace PSCHD.DB
     {
         PSCHD_Context context;
 
+        public bool IsCardAlreadyAvailable(string stringId)
+        {
+            return context.MagiCards.Any(e => e.string_id == stringId);
+        }
         public MagicCardRepository()
         {
             context = new PSCHD_Context();
@@ -19,8 +23,11 @@ namespace PSCHD.DB
 
         public void SaveNewCard(MagicCard magicCard)
         {
-            context.MagiCards.Add(magicCard);
-            context.SaveChanges();
+            if (magicCard != null)
+            {
+                context.MagiCards.Add(magicCard);
+                context.SaveChanges();
+            }
         }
 
         public List<MagicCard> GetAllCards()

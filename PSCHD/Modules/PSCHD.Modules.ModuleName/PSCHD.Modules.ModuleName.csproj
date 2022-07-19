@@ -12,4 +12,8 @@
     <ProjectReference Include="..\..\PSCHD.Core\PSCHD.Core.csproj" />
     <ProjectReference Include="..\..\Services\PSCHD.Services.Interfaces\PSCHD.Services.Interfaces.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
 </Project>

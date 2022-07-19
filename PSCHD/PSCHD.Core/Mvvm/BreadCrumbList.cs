@@ -106,7 +106,6 @@ namespace PSCHD.Core.Mvvm
 
         public void ClearAllClearable()
         {
-
             for (int i = 0; i < BreadCrumbs.Count; i++)
             {
                 if (BreadCrumbs[i].CanBeCleared)
@@ -114,6 +113,11 @@ namespace PSCHD.Core.Mvvm
                     DeleteBreadcrumbs(BreadCrumbs[i].ViewModelName);
                 }
             }
+        }
+
+        public void ClearAll()
+        {
+            BreadCrumbs.Clear();
         }
     }
 }

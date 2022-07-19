@@ -46,8 +46,10 @@ namespace PSCHD
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewViewModel>(typeof(SettingsView).FullName);
             containerRegistry.RegisterForNavigation<ThemeSettings, ThemeSettingsViewModel>(typeof(ThemeSettings).FullName);
             containerRegistry.RegisterForNavigation<CardsOverview, CardsOverviewViewModel>(typeof(CardsOverview).FullName);
+            containerRegistry.RegisterForNavigation<UserView, UserViewViewModel>(typeof(UserView).FullName);
+            containerRegistry.RegisterForNavigation<UserCollectionsView, UserCollectionsViewViewModel>(typeof(UserCollectionsView).FullName);
+            containerRegistry.RegisterForNavigation<StonksView, StonksViewViewModel>(typeof(StonksView).FullName);
             containerRegistry.RegisterDialog<LoginView, LoginViewModel>(typeof(LoginView).FullName);
-
         }
 
         protected override void RegisterRequiredTypes(IContainerRegistry containerRegistry)

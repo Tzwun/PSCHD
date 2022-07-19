@@ -7,7 +7,9 @@
         xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:metroBehaviour="http://metro.mahapps.com/winfx/xaml/shared"
         xmlns:core="clr-namespace:PSCHD.Core;assembly=PSCHD.Core"
+        xmlns:local="clr-namespace:PSCHD.ViewModels"
         xmlns:helper="clr-namespace:PSCHD.Helper"
+        xmlns:mde="clr-namespace:MaterialDesignExtensions.Controls;assembly=MaterialDesignExtensions"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Style="{StaticResource MaterialDesignWindow}"
         IsCloseButtonEnabled="False"
@@ -23,6 +25,7 @@
         WindowTitleBrush="{DynamicResource PrimaryHueDarkBrush}">
     <metro:MetroWindow.Resources>
         <helper:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
+        <helper:BreadcrumbToIconConverter x:Key="BreadcrumbToIconConverter"/>
     </metro:MetroWindow.Resources>
     <i:Interaction.Behaviors>
         <metroBehaviour:BorderlessWindowBehavior/>
@@ -45,6 +48,7 @@
                     <TextBlock Text="{Binding Title}" FontSize="32" HorizontalAlignment="Center"/>
                     <TextBlock Text="Pascal SCHmidt Database" FontSize="14" HorizontalAlignment="Center"/>
                     <TextBlock Text="Version 1.0.0.0" FontSize="14" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Uhrzeit}" FontSize="14" HorizontalAlignment="Center"/>
                 </StackPanel>
             </material:ColorZone>
             <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3" Padding="16,8" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -70,7 +74,7 @@
                                             <material:PackIcon VerticalAlignment="Center" 
                                                                        Background="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type material:ColorZone}}}"
                                                                        Height="48" Width="48" Margin="4" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" 
-                                                                       Kind="{Binding ViewModelName, Converter={StaticResource BreadCrumbToIconConverter}, Mode=OneWay}">
+                                                                       Kind="{Binding ViewModelName, Converter={StaticResource  BreadcrumbToIconConverter}, Mode=OneWay}">
                                             </material:PackIcon>
 
                                         </material:Card>
@@ -97,9 +101,9 @@
                         </StackPanel>
                         <material:PopupBox  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                             <StackPanel>
-                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Einstellungen" IsEnabled="True" Command="{Binding Settings_Command}" />
-                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Load Cards" Command="{Binding LoadCards_Command}"/>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Login" Command="{Binding LoginCommand}"/>
                                 <Separator/>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Einstellungen" IsEnabled="True" Command="{Binding Settings_Command}" />
                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Minimieren" Click="Button_Click"/>
                                 <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Beenden" Command="{Binding ExitApplication_Command}"/>
                             </StackPanel>
@@ -108,28 +112,8 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     </StackPanel>
                 </DockPanel>
-
-                <!--<DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-                    <material:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
-                        <StackPanel>
-
-                            -->
-                <!--<StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Light" Margin="0 0 10 0"/>
-                            <ToggleButton Command="{Binding ToggleThemeCommand}" IsChecked="{Binding IsDarkMode}"/>
-                            <TextBlock Text="Dark" Margin="10 0 0 0"/>
-                        </StackPanel>-->
-                <!--
-
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Einstellungen" IsEnabled="True" Command="{Binding Settings_Command}" />
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Load Cards" Command="{Binding LoadCards_Command}"/>
-                            <Separator/>
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Minimieren" Click="Button_Click"/>
-                            <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Beenden" Command="{Binding ExitApplication_Command}"/>
-                        </StackPanel>
-                    </material:PopupBox>
-                </DockPanel>-->
             </material:ColorZone>
+
             <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3"  Grid.Column="0" Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ListBox x:Name="MainMenu" Margin="0 16 0 16" SelectedIndex="{Binding SelectedMenu}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
                     <i:Interaction.Triggers>
@@ -154,6 +138,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                     <local:MenuItem DisplayName="Benutzer" Name="Benutzer" Icon="Account"/>
+                    <local:MenuItem DisplayName="Alle Karten" Name="AlleKarten" Icon="CardsOutline"/>
+                    <local:MenuItem DisplayName="Meine Karten" Name="MeineKarten" Icon="Graph"/>
+                    <local:MenuItem DisplayName="Stonks" Name="Stonks" Icon="GraphLine"/>
+
                 </ListBox>
             </material:ColorZone>
 

@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity;
 
 namespace PSCHD.ViewModels
 {
     public class ThemeSettingsViewModel : ViewModelBase
     {
-        public ThemeSettingsViewModel()
+        public ThemeSettingsViewModel(IUnityContainer unityContainer)
+            : base(unityContainer)
         {
             PaletteHelper paletteHelper = new PaletteHelper();
             ITheme theme = paletteHelper.GetTheme();

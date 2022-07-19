@@ -8,14 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using Unity;
 
 namespace PSCHD.ViewModels
 {
-    public class SettingsViewViewModel : RegionViewModelBase
+    public class SettingsViewViewModel : ViewModelBase
     {
 
-        public SettingsViewViewModel(IRegionManager regionManager)
-            : base(regionManager)
+        public SettingsViewViewModel(IUnityContainer unityContainer)
+            : base(unityContainer)
         {
             Swatches = new SwatchesProvider().Swatches;
         }

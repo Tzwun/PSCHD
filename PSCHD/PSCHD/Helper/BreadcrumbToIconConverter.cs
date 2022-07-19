@@ -10,27 +10,21 @@ namespace PSCHD.Helper
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string temp = value as string;
-            temp = Regex.Replace(temp, @"[V]\d|[B]\d|\d{2}|[A-Z]{2}", string.Empty);
+            //temp = Regex.Replace(temp, @"[V]\d|[B]\d|\d{2}|[A-Z]{2}", string.Empty);
             if (temp != null)
             {
                 switch (temp)
                 {
-                    case "Lama.Views.MainWindow":
+                    case "PSCHD.Views.MainWindow":
                         return "Home";
-                    case "Lama.Views.UserView":
+                    case "PSCHD.Views.UserView":
                         return "Account";
-                    case "Lama.Views.OrderToMachineView":
-                        return "ChartTimeline";
-                    case "Lama.Views.DeliveryOrderView":
-                        return "TruckDelivery";
-                    case "Lama.Views.MachineRegistrationDetailView":
-                        return "TruckDelivery";
-                    case "Lama.Views.PersonalOrdersView":
-                        return "TruckFast";
-                    case "Lama.Views.PersonalAchievementsView":
-                        return "AccountStar";
-                    case "Lama.Views.PersonalChatView":
-                        return "CommentProcessing";
+                    case "PSCHD.Views.CardsOverview":
+                        return "CardsOutline";
+                    case "PSCHD.Views.UserCollectionsView":
+                        return "Graph";
+                    case "PSCHD.Views.StonksView":
+                        return "GraphLine";
                     case "ChevronRight":
                         return "ChevronRight";
                     default:

@@ -11,6 +11,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using PSCHD.DB;
 using Newtonsoft.Json.Linq;
+using Unity;
+using Prism.Commands;
+using MaterialDesignExtensions.Controls;
+using System;
 
 namespace PSCHD.ViewModels
 {
@@ -19,7 +23,19 @@ namespace PSCHD.ViewModels
         private MagicCardRepository _repository;
 
         private ObservableCollection<MagicCard> _magicCards;
-        private IRegionManager _regionManager;
+
+        private bool _isImporting;
+        public bool IsImporting
+        {
+            get { return _isImporting; }
+            set { SetProperty(ref _isImporting, value); }
+        }
+
+        public CardsOverviewViewModel(IUnityContainer unityContainer)
+            : base(unityContainer)
+        {
+            _repository = new MagicCardRepository();
+        }
 
         public ObservableCollection<MagicCard> MagicCards
         {
@@ -28,7 +44,6 @@ namespace PSCHD.ViewModels
         }
 
         private NotifyTaskCompletion<ObservableCollection<MagicCard>> _loadCardsTask;
-        private long _filesize;
 
         public NotifyTaskCompletion<ObservableCollection<MagicCard>> LoadCardsTask
 
@@ -37,35 +52,83 @@ namespace PSCHD.ViewModels
             set { SetProperty(ref _loadCardsTask, value); }
         }
 
-        public CardsOverviewViewModel(IRegionManager regionManager)
+        private DelegateCommand _importCommand;
+        private long _filesize;
+        private long _position;
+        public double ImportProgress
         {
-            _regionManager = regionManager;
+            get
+            {
+                if (_filesize != 0)
+                {
+                    return (_filesize - _position) / _filesize;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
         }
 
-        private async Task<ObservableCollection<MagicCard>> LoadMagicCards(string filePath)
-        {
-            _repository = new MagicCardRepository();
-            var _result = new ObservableCollection<MagicCard>();
+        public DelegateCommand ImportCommand =>
+            _importCommand ?? (_importCommand = new DelegateCommand(ExecuteImportCommand, () => true));
 
-            //using (StreamReader sr = new StreamReader(filePath))
-            //{
-            //    using (JsonReader reader = new JsonTextReader(sr))
-            //    {
-            //        _filesize = sr.BaseStream.Length;
-            //        await Task.Run(() =>
-            //        {
-            //            while (reader.Read())
-            //            {
-            //                if (reader.TokenType == JsonToken.StartObject)
-            //                {
-            //                    JObject obj = JObject.Load(reader);
-            //                    //_repository.SaveNewCard(ParseMagicCards.Parse(JsonConvert.DeserializeObject<RawMagicCard>(obj.ToString())));
-            //                    _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
-            //                }
-            //            }
-            //        });
-            //    }
-            //}
+        async void ExecuteImportCommand()
+        {
+            OpenFileDialogArguments fileDialogArguments = new OpenFileDialogArguments
+            {
+                Height = 500,
+                Width = 750,
+                Filters = "Json Files | *.json",
+                SwitchPathPartsAsButtonsEnabled = true,
+                CurrentDirectory = $"{Environment.SpecialFolder.DesktopDirectory}",
+                ShowHiddenFilesAndDirectories = false,
+                ShowSystemFilesAndDirectories = false,
+                PathPartsAsButtons = true,
+            };
+            OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync(RegionNames.ContentRegion, fileDialogArguments);
+            if (fileResults.Confirmed && fileResults.File != null)
+            {
+                LoadCardsTask = null;
+                IsImporting = true;
+                ImportCards(fileResults.File);
+                IsImporting = false;
+                LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards());
+
+            }
+        }
+
+        private async void ImportCards(string file)
+        {
+
+
+            using (StreamReader sr = new StreamReader(file))
+            {
+                using (JsonReader reader = new JsonTextReader(sr))
+                {
+                    _filesize = sr.BaseStream.Length;
+                    await Task.Run(() =>
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader.TokenType == JsonToken.StartObject)
+                            {
+                                JObject obj = JObject.Load(reader);
+                                _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
+                            }
+                            _position = sr.BaseStream.Position;
+                            RaisePropertyChanged("ImportProgress");
+                        }
+                    });
+                }
+            }
+
+        }
+
+        private async Task<ObservableCollection<MagicCard>> LoadMagicCards()
+        {
+            var _result = new ObservableCollection<MagicCard>();
             return (ObservableCollection<MagicCard>)_result.AddRange(await _repository.GetAllCardsAsync());
         }
 
@@ -75,7 +138,7 @@ namespace PSCHD.ViewModels
             //if (navigationContext.Parameters.Count != 0)
             //{
             //    var filePath = navigationContext.Parameters.GetValue<string>("filePath");
-            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards(""));//filePath));
+            LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards());//filePath));
             //}
         }
     }

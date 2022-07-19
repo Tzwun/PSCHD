@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PSCHD.Modules.ModuleName.Views
+namespace PSCHD.Views
 {
     /// <summary>
-    /// Interaction logic for ViewA.xaml
+    /// Interaktionslogik für BackGroundView.xaml
     /// </summary>
-    public partial class ViewA : UserControl
+    public partial class BackGroundView : UserControl
     {
-        public ViewA()
+        public BackGroundView()
         {
             InitializeComponent();
         }

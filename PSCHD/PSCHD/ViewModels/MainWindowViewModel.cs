@@ -4,13 +4,22 @@ using Prism.Mvvm;
 using Prism.Regions;
 using PSCHD.Core;
 using PSCHD.Core.Mvvm;
+using PSCHD.Helper;
 using PSCHD.Views;
 using System;
+using System.Windows.Threading;
+using Unity;
 
 namespace PSCHD.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+
+        public BreadCrumbList BreadCrumbList
+        {
+            get { return _breadCrumbList; }
+            set { SetProperty(ref _breadCrumbList, value); }
+        }
 
         private DelegateCommand _settings_Command;
         public DelegateCommand Settings_Command =>
@@ -30,44 +39,102 @@ namespace PSCHD.ViewModels
             App.Current.Shutdown();
         }
 
-        private DelegateCommand _loadCards;
-        public DelegateCommand LoadCards_Command =>
-            _loadCards ?? (_loadCards = new DelegateCommand(ExecuteLoadCards_Command, () => true));
+        private DelegateCommand _loginCommand;
+        public DelegateCommand LoginCommand =>
+            _loginCommand ?? (_loginCommand = new DelegateCommand(ExecuteLoginCommand, () => true));
 
-        async void ExecuteLoadCards_Command()
+
+        private DelegateCommand<string> _viewChangeCommand;
+        public DelegateCommand<string> ViewChangeCommand =>
+            _viewChangeCommand ?? (_viewChangeCommand = new DelegateCommand<string>(ExecuteViewChangeCommand, (s) => true));
+
+        private int _selectedMenu;
+        public int SelectedMenu
         {
-            //OpenFileDialogArguments fileDialogArguments = new OpenFileDialogArguments
-            //{
-            //    Height = 500,
-            //    Width = 750,
-            //    Filters = "Json Files | *.json",
-            //    SwitchPathPartsAsButtonsEnabled = true,
-            //    CurrentDirectory = $"{Environment.SpecialFolder.Desktop}",
-            //    ShowHiddenFilesAndDirectories = false,
-            //    ShowSystemFilesAndDirectories = false
-            //};
-            //OpenFileDialogResult fileResults = await OpenFileDialog.ShowDialogAsync("RootDialog", fileDialogArguments);
-            //if (fileResults.Confirmed && fileResults.File != null)
-            //{
-            //    NavigationParameters navigationParameters = new NavigationParameters();
-            //    navigationParameters.Add("filePath", fileResults.File);
-            _regionManager.RequestNavigate(RegionNames.ContentRegion, typeof(CardsOverview).FullName); //, navigationParameters);
-            //}
+            get { return _selectedMenu; }
+            set { SetProperty(ref _selectedMenu, value); }
         }
 
+        void ExecuteViewChangeCommand(string obj)
+        {
+            if (obj != null)
+            {
+                if (true)//_loggedUser.ActivatedUser != null)
+                {
+                    if (true)//AuthContextSelector(GetAuthContextFromMenuName(obj)))
+                    {
+                        _breadCrumbList.ClearAll();
+                        RaisePropertyChanged("BreadCrumbList");
+                        _regionManager.RequestNavigate(RegionNames.ContentRegion, MainRegionNavigate.To(obj));
+                        if (obj == "Background")
+                        {
+                            _breadCrumbList.ClearAll();
+                            SelectedMenu = -1;
+                        }
+                    }
+                    else
+                    {
+                        string ViewIdentification = obj;
+                        //string ViewName = LocalizationProvider.GetLocalizedValue<string>(GetAuthContextFromMenuName(obj));
+                        //ExclamationMessageBoxEnqueue(string.Format(LocalizationProvider.GetLocalizedValue<string>("Permission_Denied"), ViewName));
+                        SelectedMenu = -1;
+                    }
+                }
+                else
+                {
+                    if (obj == "Background")
+                    {
+                        //_regionManager.RequestNavigate(RegionNames.ContentRegion, MainRegionNavigate.To(obj));
+                        SelectedMenu = -1;
+                        _breadCrumbList.ClearAll();
+                    }
+                    else
+                    {
+                        string ViewIdentification = obj;
+                        //string ViewName = LocalizationProvider.GetLocalizedValue<string>(GetAuthContextFromMenuName(obj));
+                        //ExclamationMessageBoxEnqueue(string.Format(LocalizationProvider.GetLocalizedValue<string>("Permission_Denied"), ViewName));
+                        SelectedMenu = -1;
+                    }
+                }
+            }
+            else
+            {
+                _breadCrumbList.ClearAll();
+            }
+        }
 
-        private string _title = "PSHD";
-        private IRegionManager _regionManager;
+        public DateTime Uhrzeit
+        {
+            get { return DateTime.Now; }
+        }
+
+        async void ExecuteLoginCommand()
+        {
+
+        }
+
+        public MainWindowViewModel(IUnityContainer unityContainer)
+            : base(unityContainer)
+        {
+            //Time Initialization
+            _timer = new DispatcherTimer();
+            _timer.Tick += UpdateTime;
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            _timer.Start();
+        }
+
+        private void UpdateTime(object sender, EventArgs e)
+        {
+            RaisePropertyChanged("Uhrzeit");
+        }
+
+        private string _title = "PSCHD";
+        private DispatcherTimer _timer;
 
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
-        }
-
-        public MainWindowViewModel(IRegionManager regionmanager)
-        {
-            _regionManager = regionmanager;
         }
     }
 }

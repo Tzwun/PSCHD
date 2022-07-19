@@ -20,9 +20,80 @@
         <helper:ImageSourceConverter x:Key="ImageSourceConverter"/>
         <system:String x:Key="ImageSize">border_crop</system:String>
     </UserControl.Resources>
-    <Grid d:DataContext="{d:DesignInstance design:CardsOverviewDesign, IsDesignTimeCreatable=True}">
-        <!--<ProgressBar HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="80" IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Visibility="Visible"/>-->
-        <ListBox ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <material:Card DockPanel.Dock="Top" Margin="16,12,16,0" Grid.Row="0" material:ShadowAssist.ShadowDepth="Depth1" Background="{DynamicResource MaterialDesignPaper}" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" >
+                    <ToggleButton x:Name="Importieren" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10,10,0,10" VerticalAlignment="Top" ToolTip="Reload" Command="{Binding ImportCommand}">
+                        <ToggleButton.Content>
+                            <material:PackIcon Kind="Import" Height="24" Width="24"/>
+                        </ToggleButton.Content>
+                    </ToggleButton>
+                    <ToggleButton x:Name="SortingButton" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10,10,0,10" VerticalAlignment="Top" ToolTip="Sortieren"  IsChecked="{Binding SortingDirection}">
+                        <ToggleButton.Content>
+                            <material:PackIcon Kind="SortDescending" Height="24" Width="24"/>
+                        </ToggleButton.Content>
+                        <material:ToggleButtonAssist.OnContent>
+                            <material:PackIcon Kind="SortAscending" Height="24" Width="24"/>
+                        </material:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+                    <ToggleButton IsChecked="{Binding IsFilterActive}" Width="{Binding ElementName=ReloadButton, Path=Width}" Height="{Binding ElementName=ReloadButton, Path=Height}" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignActionToggleButton}" Margin="10" VerticalAlignment="Top" ToolTip="Filter Aktivieren">
+                        <ToggleButton.Content>
+                            <material:PackIcon Kind="FilterRemove" />
+                        </ToggleButton.Content>
+                        <material:ToggleButtonAssist.OnContent>
+                            <material:PackIcon Kind="Filter" />
+                        </material:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+                </StackPanel>
+                <Expander Grid.Column="1" x:Name="FilterExpander" HorizontalAlignment="Stretch" Margin="0,0,8,4" Header="Filter">
+                    <WrapPanel>
+                        <TextBox material:HintAssist.Hint="Karten Name" VerticalAlignment="Center"  MinWidth="300" FontSize="18" Margin="12,12,12,32" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding FilterChargenNummer, Delay=100,UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox material:HintAssist.Hint="" VerticalAlignment="Center"  MinWidth="300" FontSize="18" Margin="12,12,12,32" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Text="{Binding FilterWerkzeugNummer, Delay=100,UpdateSourceTrigger=PropertyChanged}" />
+                        <material:ColorZone Mode="Standard" Padding="8 4 8 4" CornerRadius="2" Panel.ZIndex="1" Margin="16 0 0 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="1" Height="{Binding RelativeSource={RelativeSource Self},Path=ActualWidth}" Style="{DynamicResource MaterialDesignToolButton}" Command="{Binding ArticleNull_Command}">
+                                    <material:PackIcon Kind="Close" Opacity=".56" />
+                                </Button>
+                                <ComboBox  MinWidth="300" FontSize="18" VerticalAlignment="Bottom" DisplayMemberPath="ArticleDescription" ItemsSource="{Binding Articles}" Margin="12,12,12,32" Style="{StaticResource MaterialDesignFloatingHintComboBox}" material:HintAssist.Hint="" SelectedItem="{Binding FilterArtikel, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </material:ColorZone>
+                        <material:ColorZone Mode="Standard" Padding="8 4 8 4" CornerRadius="2" Panel.ZIndex="1" Margin="16 0 0 0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="1" Height="{Binding RelativeSource={RelativeSource Self},Path=ActualWidth}" Style="{DynamicResource MaterialDesignToolButton}" Command="{Binding UserNull_Command}">
+                                    <material:PackIcon Kind="Close" Opacity=".56" />
+                                </Button>
+                                <ComboBox MinWidth="300"  FontSize="18" ItemsSource="{Binding Users}" DisplayMemberPath="Name" VerticalAlignment="Bottom" 
+                                  Margin="12,12,12,32" Style="{StaticResource MaterialDesignFloatingHintComboBox}" material:HintAssist.Hint="" 
+                                  SelectedItem="{Binding FilterUser, UpdateSourceTrigger=PropertyChanged}" >
+                                </ComboBox>
+                            </Grid>
+                        </material:ColorZone>
+                    </WrapPanel>
+                </Expander>
+            </Grid>
+        </material:Card>
+        <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="80" IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Visibility="{Binding LoadCardsTask.IsNotCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="160" Value="{Binding ImportProgress, Mode=OneWay}" Style="{StaticResource  MaterialDesignLinearProgressBar}" Visibility="{Binding IsImporting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <ListBox Grid.Row="1" ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}" Visibility="{Binding LoadCardsTask.IsSuccessfullyCompleted, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <core:VirtualizingWrapPanel ChildHeight="650" ChildWidth="380" VirtualizingPanel.CacheLengthUnit="Item" VirtualizingPanel.CacheLength="52" VirtualizingPanel.ScrollUnit="Pixel"/>
@@ -38,7 +109,7 @@
                             <material:TransitionEffect Kind="FadeIn" />
                         </material:TransitioningContent.OpeningEffects>
 
-                        <GroupBox Width="333" Style="{StaticResource MaterialDesignGroupBox}" material:ColorZoneAssist.Mode="SecondaryLight">
+                        <GroupBox Width="333" Style="{StaticResource MaterialDesignGroupBox}" VerticalAlignment="Stretch" material:ColorZoneAssist.Mode="SecondaryLight">
                             <GroupBox.Header>
                                 <DockPanel>
                                     <TextBlock DockPanel.Dock="Left">
