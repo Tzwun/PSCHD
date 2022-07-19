@@ -69,23 +69,14 @@ namespace PSCHD.ViewModels
             return (ObservableCollection<MagicCard>)_result.AddRange(await _repository.GetAllCardsAsync());
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
+            base.OnNavigatedTo(navigationContext);
             //if (navigationContext.Parameters.Count != 0)
             //{
             //    var filePath = navigationContext.Parameters.GetValue<string>("filePath");
             LoadCardsTask = new NotifyTaskCompletion<ObservableCollection<MagicCard>>(LoadMagicCards(""));//filePath));
             //}
         }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
     }
 }

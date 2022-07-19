@@ -7,6 +7,7 @@
         xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:metroBehaviour="http://metro.mahapps.com/winfx/xaml/shared"
         xmlns:core="clr-namespace:PSCHD.Core;assembly=PSCHD.Core"
+        xmlns:helper="clr-namespace:PSCHD.Helper"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Style="{StaticResource MaterialDesignWindow}"
         IsCloseButtonEnabled="False"
@@ -20,7 +21,9 @@
         Height="1080" Width="1920"
         
         WindowTitleBrush="{DynamicResource PrimaryHueDarkBrush}">
-
+    <metro:MetroWindow.Resources>
+        <helper:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>
+    </metro:MetroWindow.Resources>
     <i:Interaction.Behaviors>
         <metroBehaviour:BorderlessWindowBehavior/>
     </i:Interaction.Behaviors>
@@ -45,15 +48,78 @@
                 </StackPanel>
             </material:ColorZone>
             <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3" Padding="16,8" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+                <DockPanel HorizontalAlignment="Stretch" >
+                    <ItemsControl DockPanel.Dock="Left" Height="64" ItemsSource="{Binding BreadCrumbList.BreadCrumbs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <material:PackIcon Kind="ChevronRight" Height="48" Width="48" VerticalAlignment="Center" Visibility="{Binding ShowChevron, Converter={StaticResource BoolToCollapsedConverter}}"/>
+                                    <material:Badged BadgeColorZoneMode="SecondaryLight" SnapsToDevicePixels="True" FontSize="12" Badge="{Binding Badge}">
+                                        <material:Card VerticalAlignment="Center" Background="{DynamicResource PrimaryHueDarkBrush}">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="MouseDown">
+                                                    <i:InvokeCommandAction Command="{Binding ButtonCommand, Mode=OneWay}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
+
+                                            <material:PackIcon VerticalAlignment="Center" 
+                                                                       Background="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType={x:Type material:ColorZone}}}"
+                                                                       Height="48" Width="48" Margin="4" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" 
+                                                                       Kind="{Binding ViewModelName, Converter={StaticResource BreadCrumbToIconConverter}, Mode=OneWay}">
+                                            </material:PackIcon>
+
+                                        </material:Card>
+                                    </material:Badged>
+                                    <material:Card VerticalAlignment="Bottom" Visibility="{Binding ShowsCloseCommand, Converter={StaticResource BoolToCollapsedConverter}}">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="MouseDown">
+                                                <i:InvokeCommandAction Command="{Binding CloseCommand, Mode=OneWay}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                        <material:ColorZone Mode="SecondaryLight">
+                                            <material:PackIcon Kind="Close" VerticalAlignment="Center" Margin="4"/>
+                                        </material:ColorZone>
+                                    </material:Card>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <!--<ComboBox Margin="32,16,32,16" MinWidth="150" FontSize="24" HorizontalContentAlignment="Left" material:TextFieldAssist.DecorationVisibility="Hidden" ItemsSource="{Binding MergedAvailableCultures, Source={x:Static lex:LocalizeDictionary.Instance}}" SelectedItem="{Binding Culture, Source={x:Static lex:LocalizeDictionary.Instance}}" DisplayMemberPath="DisplayName"/>-->
+                        <StackPanel Orientation="Vertical" Margin="16">
+                            <metro:TransitioningContentControl Content="{Binding User.Name}" FontSize="22" Transition="Right" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <material:PopupBox  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
+                            <StackPanel>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Einstellungen" IsEnabled="True" Command="{Binding Settings_Command}" />
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Load Cards" Command="{Binding LoadCards_Command}"/>
+                                <Separator/>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Minimieren" Click="Button_Click"/>
+                                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Beenden" Command="{Binding ExitApplication_Command}"/>
+                            </StackPanel>
+                        </material:PopupBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    </StackPanel>
+                </DockPanel>
+
+                <!--<DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                     <material:PopupBox DockPanel.Dock="Right" HorizontalAlignment="Right"  PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                         <StackPanel>
 
-                            <!--<StackPanel Orientation="Horizontal">
+                            -->
+                <!--<StackPanel Orientation="Horizontal">
                             <TextBlock Text="Light" Margin="0 0 10 0"/>
                             <ToggleButton Command="{Binding ToggleThemeCommand}" IsChecked="{Binding IsDarkMode}"/>
                             <TextBlock Text="Dark" Margin="10 0 0 0"/>
                         </StackPanel>-->
+                <!--
 
                             <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Einstellungen" IsEnabled="True" Command="{Binding Settings_Command}" />
                             <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Load Cards" Command="{Binding LoadCards_Command}"/>
@@ -62,9 +128,34 @@
                             <Button Style="{StaticResource MaterialDesignFlatButton}" Content="Beenden" Command="{Binding ExitApplication_Command}"/>
                         </StackPanel>
                     </material:PopupBox>
-                </DockPanel>
+                </DockPanel>-->
             </material:ColorZone>
-            <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3"  Grid.Column="0" Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <material:ColorZone Mode="PrimaryMid" material:ShadowAssist.ShadowDepth="Depth3"  Grid.Column="0" Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ListBox x:Name="MainMenu" Margin="0 16 0 16" SelectedIndex="{Binding SelectedMenu}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding ViewChangeCommand}" CommandParameter="{Binding ElementName=MainMenu, Path=SelectedItem.Name}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="local:MenuItem">
+                            <material:TransitioningContent HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" OpeningEffectsOffset="{material:IndexedItemOffsetMultiplierExtension 0:0:0.2}"
+                                                                 Opacity="0"
+                                                                 RunHint="Loaded">
+                                <material:TransitioningContent.OpeningEffects>
+                                    <material:TransitionEffect Kind="SlideInFromLeft" />
+                                    <material:TransitionEffect Kind="FadeIn" />
+                                </material:TransitioningContent.OpeningEffects>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <material:PackIcon Kind="{Binding Icon}" Width="24" Height="24" Foreground="{DynamicResource IdealForegroundColorBrush}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <TextBlock HorizontalAlignment="Right" Text="{Binding DisplayName}" Foreground="{DynamicResource IdealForegroundColorBrush}" FontSize="24" />
+                                </StackPanel>
+                            </material:TransitioningContent>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <local:MenuItem DisplayName="Benutzer" Name="Benutzer" Icon="Account"/>
+                </ListBox>
+            </material:ColorZone>
 
             <metro:TransitioningContentControl Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="16" prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" />
         </Grid>

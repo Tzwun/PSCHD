@@ -3,12 +3,13 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using PSCHD.Core;
+using PSCHD.Core.Mvvm;
 using PSCHD.Views;
 using System;
 
 namespace PSCHD.ViewModels
 {
-    public class MainWindowViewModel : BindableBase
+    public class MainWindowViewModel : ViewModelBase
     {
 
         private DelegateCommand _settings_Command;

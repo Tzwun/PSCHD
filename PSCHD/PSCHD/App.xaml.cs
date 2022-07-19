@@ -1,7 +1,11 @@
-﻿using Prism.Ioc;
+﻿using CommonServiceLocator;
+using Prism.Events;
+using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Unity;
+using PSCHD.Core.Mvvm;
 using PSCHD.Modules.ModuleName;
 using PSCHD.Resources;
 using PSCHD.Services;
@@ -46,6 +50,11 @@ namespace PSCHD
 
         }
 
+        protected override void RegisterRequiredTypes(IContainerRegistry containerRegistry)
+        {
+            base.RegisterRequiredTypes(containerRegistry);
+            containerRegistry.RegisterInstance(new BreadCrumbList(Container.Resolve<IRegionManager>(), Container.Resolve<IEventAggregator>()));
+        }
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
         }
