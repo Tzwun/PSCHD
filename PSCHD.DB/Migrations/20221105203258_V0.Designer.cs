@@ -11,13 +11,13 @@ using PSCHD.DB;
 namespace PSCHD.DB.Migrations
 {
     [DbContext(typeof(PSCHD_Context))]
-    [Migration("20220718081737_V1")]
-    partial class V1
+    [Migration("20221105203258_V0")]
+    partial class V0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.7");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
             modelBuilder.Entity("PSCHD.Model.AppSetting", b =>
                 {
@@ -39,17 +39,54 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("artistId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
-
                     b.ToTable("ArtistIDs");
+                });
+
+            modelBuilder.Entity("PSCHD.Model.CardArtistsId", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ArtistIdId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtistIdId");
+
+                    b.HasIndex("MagicCardstring_id");
+
+                    b.ToTable("CardArtistsId");
+                });
+
+            modelBuilder.Entity("PSCHD.Model.CardFinish", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("FinishId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FinishId");
+
+                    b.HasIndex("MagicCardstring_id");
+
+                    b.ToTable("CardFinishes");
                 });
 
             modelBuilder.Entity("PSCHD.Model.Finish", b =>
@@ -58,17 +95,24 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("finish")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
-
                     b.ToTable("Finishes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            finish = "nonfoil"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            finish = "foil"
+                        });
                 });
 
             modelBuilder.Entity("PSCHD.Model.ImageUris", b =>
@@ -83,15 +127,15 @@ namespace PSCHD.DB.Migrations
                     b.Property<int>("ImageSize")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Parentstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("URI")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("Parentstring_id");
 
                     b.ToTable("ImageUris");
                 });
@@ -163,30 +207,11 @@ namespace PSCHD.DB.Migrations
 
             modelBuilder.Entity("PSCHD.Model.MagicCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("string_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("MagicCardSetId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Cardset")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Cardset_id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Cardset_name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Cardset_search_uri")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Cardset_type")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Cardset_uri")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("_object")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("artist")
                         .HasColumnType("TEXT");
@@ -302,9 +327,6 @@ namespace PSCHD.DB.Migrations
                     b.Property<bool>("story_spotlight")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("string_id")
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("tcgplayer_id")
                         .HasColumnType("INTEGER");
 
@@ -323,7 +345,9 @@ namespace PSCHD.DB.Migrations
                     b.Property<bool>("variation")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                    b.HasKey("string_id");
+
+                    b.HasIndex("MagicCardSetId");
 
                     b.HasIndex("legalitiesId");
 
@@ -339,14 +363,14 @@ namespace PSCHD.DB.Migrations
                     b.Property<int?>("ColorId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ColorId");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.ToTable("MagicCardColors");
                 });
@@ -357,15 +381,15 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("MagicColorIdentityId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.HasIndex("MagicColorIdentityId");
 
@@ -378,15 +402,15 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("MagicGameId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.HasIndex("MagicGameId");
 
@@ -399,19 +423,45 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("keywordId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.HasIndex("keywordId");
 
-                    b.ToTable("MagicCardKeyword");
+                    b.ToTable("MagicCardKeywords");
+                });
+
+            modelBuilder.Entity("PSCHD.Model.MagicCardSet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SetID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SetName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SetSearchURI")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SetType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SetURI")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MagicCardSets");
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicCollection", b =>
@@ -767,7 +817,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MagicKeyword");
+                    b.ToTable("Keywords");
 
                     b.HasData(
                         new
@@ -1058,15 +1108,15 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("multiVerseId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.ToTable("MultiverseIds");
                 });
@@ -1080,8 +1130,8 @@ namespace PSCHD.DB.Migrations
                     b.Property<int?>("FinishId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
@@ -1089,18 +1139,35 @@ namespace PSCHD.DB.Migrations
                     b.Property<string>("currency")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("datetime")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
+                    b.Property<DateTime?>("datetime")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FinishId");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.ToTable("Prices");
+                });
+
+            modelBuilder.Entity("PSCHD.Model.RelatedMagicCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("relatedCardID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MagicCardstring_id");
+
+                    b.ToTable("RelatedMagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.RelatedUris", b =>
@@ -1109,8 +1176,8 @@ namespace PSCHD.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Source")
                         .HasColumnType("TEXT");
@@ -1120,7 +1187,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.ToTable("RelatedUris");
                 });
@@ -1154,15 +1221,15 @@ namespace PSCHD.DB.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MagicCardId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("MagicCardstring_id")
+                        .HasColumnType("TEXT");
 
                     b.Property<int?>("MagicCollectionId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MagicCardId");
+                    b.HasIndex("MagicCardstring_id");
 
                     b.HasIndex("MagicCollectionId");
 
@@ -1193,34 +1260,56 @@ namespace PSCHD.DB.Migrations
                     b.ToTable("UserSettings");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.ArtistId", b =>
+            modelBuilder.Entity("PSCHD.Model.CardArtistsId", b =>
                 {
-                    b.HasOne("PSCHD.Model.MagicCard", null)
-                        .WithMany("artist_ids")
-                        .HasForeignKey("MagicCardId");
+                    b.HasOne("PSCHD.Model.ArtistId", "ArtistId")
+                        .WithMany()
+                        .HasForeignKey("ArtistIdId");
+
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
+                        .WithMany("CardArtistsIds")
+                        .HasForeignKey("MagicCardstring_id");
+
+                    b.Navigation("ArtistId");
+
+                    b.Navigation("MagicCard");
                 });
 
-            modelBuilder.Entity("PSCHD.Model.Finish", b =>
+            modelBuilder.Entity("PSCHD.Model.CardFinish", b =>
                 {
-                    b.HasOne("PSCHD.Model.MagicCard", null)
+                    b.HasOne("PSCHD.Model.Finish", "Finish")
+                        .WithMany()
+                        .HasForeignKey("FinishId");
+
+                    b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("finishes")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
+
+                    b.Navigation("Finish");
+
+                    b.Navigation("MagicCard");
                 });
 
             modelBuilder.Entity("PSCHD.Model.ImageUris", b =>
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "Parent")
                         .WithMany("image_uris")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("Parentstring_id");
 
                     b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicCard", b =>
                 {
+                    b.HasOne("PSCHD.Model.MagicCardSet", "MagicCardSet")
+                        .WithMany("MagicCards")
+                        .HasForeignKey("MagicCardSetId");
+
                     b.HasOne("PSCHD.Model.Legalities", "legalities")
                         .WithMany()
                         .HasForeignKey("legalitiesId");
+
+                    b.Navigation("MagicCardSet");
 
                     b.Navigation("legalities");
                 });
@@ -1233,7 +1322,7 @@ namespace PSCHD.DB.Migrations
 
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("colors")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.Navigation("Color");
 
@@ -1244,7 +1333,7 @@ namespace PSCHD.DB.Migrations
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("color_identity")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.HasOne("PSCHD.Model.MagicColorIdentity", "MagicColorIdentity")
                         .WithMany()
@@ -1259,7 +1348,7 @@ namespace PSCHD.DB.Migrations
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("games")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.HasOne("PSCHD.Model.MagicGame", "MagicGame")
                         .WithMany()
@@ -1274,7 +1363,7 @@ namespace PSCHD.DB.Migrations
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("keywords")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.HasOne("PSCHD.Model.MagicKeyword", "keyword")
                         .WithMany()
@@ -1298,7 +1387,7 @@ namespace PSCHD.DB.Migrations
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("multiverse_ids")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.Navigation("MagicCard");
                 });
@@ -1311,18 +1400,25 @@ namespace PSCHD.DB.Migrations
 
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("prices")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.Navigation("Finish");
 
                     b.Navigation("MagicCard");
                 });
 
+            modelBuilder.Entity("PSCHD.Model.RelatedMagicCard", b =>
+                {
+                    b.HasOne("PSCHD.Model.MagicCard", null)
+                        .WithMany("relatedCards")
+                        .HasForeignKey("MagicCardstring_id");
+                });
+
             modelBuilder.Entity("PSCHD.Model.RelatedUris", b =>
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany("related_uris")
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.Navigation("MagicCard");
                 });
@@ -1331,7 +1427,7 @@ namespace PSCHD.DB.Migrations
                 {
                     b.HasOne("PSCHD.Model.MagicCard", "MagicCard")
                         .WithMany()
-                        .HasForeignKey("MagicCardId");
+                        .HasForeignKey("MagicCardstring_id");
 
                     b.HasOne("PSCHD.Model.MagicCollection", null)
                         .WithMany("UserMagicCards")
@@ -1357,7 +1453,7 @@ namespace PSCHD.DB.Migrations
 
             modelBuilder.Entity("PSCHD.Model.MagicCard", b =>
                 {
-                    b.Navigation("artist_ids");
+                    b.Navigation("CardArtistsIds");
 
                     b.Navigation("color_identity");
 
@@ -1375,7 +1471,14 @@ namespace PSCHD.DB.Migrations
 
                     b.Navigation("prices");
 
+                    b.Navigation("relatedCards");
+
                     b.Navigation("related_uris");
+                });
+
+            modelBuilder.Entity("PSCHD.Model.MagicCardSet", b =>
+                {
+                    b.Navigation("MagicCards");
                 });
 
             modelBuilder.Entity("PSCHD.Model.MagicCollection", b =>

@@ -21,6 +21,7 @@
         WindowStyle="SingleBorderWindow"
         ShowTitleBar="True"
         Height="1080" Width="1920"
+                   WindowState="Maximized"
         WindowTitleBrush="{DynamicResource PrimaryHueDarkBrush}">
     <metro:MetroWindow.Resources>
         <helper:BoolToCollapsedConverter x:Key="BoolToCollapsedConverter"/>

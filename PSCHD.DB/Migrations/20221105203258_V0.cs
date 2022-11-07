@@ -23,6 +23,19 @@ namespace PSCHD.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ArtistIDs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    artistId = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtistIDs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Colors",
                 columns: table => new
                 {
@@ -46,6 +59,32 @@ namespace PSCHD.DB.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Colors_Identity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Finishes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    finish = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Finishes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Keywords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Keyword = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Keywords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,6 +118,23 @@ namespace PSCHD.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MagicCardSets",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    SetID = table.Column<string>(type: "TEXT", nullable: true),
+                    SetName = table.Column<string>(type: "TEXT", nullable: true),
+                    SetType = table.Column<string>(type: "TEXT", nullable: true),
+                    SetURI = table.Column<string>(type: "TEXT", nullable: true),
+                    SetSearchURI = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MagicCardSets", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MagicGames",
                 columns: table => new
                 {
@@ -89,19 +145,6 @@ namespace PSCHD.DB.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MagicGames", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MagicKeyword",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Keyword = table.Column<string>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MagicKeyword", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,10 +166,7 @@ namespace PSCHD.DB.Migrations
                 name: "MagiCards",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    _object = table.Column<string>(type: "TEXT", nullable: true),
-                    string_id = table.Column<string>(type: "TEXT", nullable: true),
+                    string_id = table.Column<string>(type: "TEXT", nullable: false),
                     oracle_id = table.Column<string>(type: "TEXT", nullable: true),
                     mtgo_id = table.Column<int>(type: "INTEGER", nullable: true),
                     mtgo_foil_id = table.Column<int>(type: "INTEGER", nullable: true),
@@ -153,12 +193,6 @@ namespace PSCHD.DB.Migrations
                     promo = table.Column<bool>(type: "INTEGER", nullable: false),
                     reprint = table.Column<bool>(type: "INTEGER", nullable: false),
                     variation = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Cardset_id = table.Column<string>(type: "TEXT", nullable: true),
-                    Cardset = table.Column<string>(type: "TEXT", nullable: true),
-                    Cardset_name = table.Column<string>(type: "TEXT", nullable: true),
-                    Cardset_type = table.Column<string>(type: "TEXT", nullable: true),
-                    Cardset_uri = table.Column<string>(type: "TEXT", nullable: true),
-                    Cardset_search_uri = table.Column<string>(type: "TEXT", nullable: true),
                     scryfall_set_uri = table.Column<string>(type: "TEXT", nullable: true),
                     rulings_uri = table.Column<string>(type: "TEXT", nullable: true),
                     prints_search_uri = table.Column<string>(type: "TEXT", nullable: true),
@@ -176,15 +210,21 @@ namespace PSCHD.DB.Migrations
                     booster = table.Column<bool>(type: "INTEGER", nullable: false),
                     story_spotlight = table.Column<bool>(type: "INTEGER", nullable: false),
                     edhrec_rank = table.Column<int>(type: "INTEGER", nullable: false),
+                    MagicCardSetId = table.Column<int>(type: "INTEGER", nullable: true),
                     legalitiesId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MagiCards", x => x.Id);
+                    table.PrimaryKey("PK_MagiCards", x => x.string_id);
                     table.ForeignKey(
                         name: "FK_MagiCards_Leglities_legalitiesId",
                         column: x => x.legalitiesId,
                         principalTable: "Leglities",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MagiCards_MagicCardSets_MagicCardSetId",
+                        column: x => x.MagicCardSetId,
+                        principalTable: "MagicCardSets",
                         principalColumn: "Id");
                 });
 
@@ -233,41 +273,51 @@ namespace PSCHD.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtistIDs",
+                name: "CardArtistsId",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    artistId = table.Column<string>(type: "TEXT", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    ArtistIdId = table.Column<int>(type: "INTEGER", nullable: true),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtistIDs", x => x.Id);
+                    table.PrimaryKey("PK_CardArtistsId", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ArtistIDs_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
-                        principalTable: "MagiCards",
+                        name: "FK_CardArtistsId_ArtistIDs_ArtistIdId",
+                        column: x => x.ArtistIdId,
+                        principalTable: "ArtistIDs",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CardArtistsId_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Finishes",
+                name: "CardFinishes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    finish = table.Column<string>(type: "TEXT", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    FinishId = table.Column<int>(type: "INTEGER", nullable: true),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Finishes", x => x.Id);
+                    table.PrimaryKey("PK_CardFinishes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Finishes_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
-                        principalTable: "MagiCards",
+                        name: "FK_CardFinishes_Finishes_FinishId",
+                        column: x => x.FinishId,
+                        principalTable: "Finishes",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CardFinishes_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -278,16 +328,17 @@ namespace PSCHD.DB.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     URI = table.Column<string>(type: "TEXT", nullable: true),
                     ImageSize = table.Column<int>(type: "INTEGER", nullable: false),
-                    ParentId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Parentstring_id = table.Column<string>(type: "TEXT", nullable: true),
+                    Image = table.Column<byte[]>(type: "BLOB", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ImageUris", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImageUris_MagiCards_ParentId",
-                        column: x => x.ParentId,
+                        name: "FK_ImageUris_MagiCards_Parentstring_id",
+                        column: x => x.Parentstring_id,
                         principalTable: "MagiCards",
-                        principalColumn: "Id");
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -297,7 +348,7 @@ namespace PSCHD.DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MagicColorIdentityId = table.Column<int>(type: "INTEGER", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,10 +359,10 @@ namespace PSCHD.DB.Migrations
                         principalTable: "Colors_Identity",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MagicCardColorIdentities_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
+                        name: "FK_MagicCardColorIdentities_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
                         principalTable: "MagiCards",
-                        principalColumn: "Id");
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -321,7 +372,7 @@ namespace PSCHD.DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ColorId = table.Column<int>(type: "INTEGER", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -332,10 +383,10 @@ namespace PSCHD.DB.Migrations
                         principalTable: "Colors",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_MagicCardColors_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
+                        name: "FK_MagicCardColors_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
                         principalTable: "MagiCards",
-                        principalColumn: "Id");
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -345,16 +396,16 @@ namespace PSCHD.DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MagicGameId = table.Column<int>(type: "INTEGER", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MagicCardGames", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MagicCardGames_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
+                        name: "FK_MagicCardGames_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
                         principalTable: "MagiCards",
-                        principalColumn: "Id");
+                        principalColumn: "string_id");
                     table.ForeignKey(
                         name: "FK_MagicCardGames_MagicGames_MagicGameId",
                         column: x => x.MagicGameId,
@@ -363,27 +414,27 @@ namespace PSCHD.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MagicCardKeyword",
+                name: "MagicCardKeywords",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     keywordId = table.Column<int>(type: "INTEGER", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MagicCardKeyword", x => x.Id);
+                    table.PrimaryKey("PK_MagicCardKeywords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MagicCardKeyword_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
-                        principalTable: "MagiCards",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_MagicCardKeyword_MagicKeyword_keywordId",
+                        name: "FK_MagicCardKeywords_Keywords_keywordId",
                         column: x => x.keywordId,
-                        principalTable: "MagicKeyword",
+                        principalTable: "Keywords",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MagicCardKeywords_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -393,61 +444,16 @@ namespace PSCHD.DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     multiVerseId = table.Column<string>(type: "TEXT", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MultiverseIds", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MultiverseIds_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
+                        name: "FK_MultiverseIds_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
                         principalTable: "MagiCards",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RelatedUris",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    URI = table.Column<string>(type: "TEXT", nullable: true),
-                    Source = table.Column<string>(type: "TEXT", nullable: true),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RelatedUris", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RelatedUris_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
-                        principalTable: "MagiCards",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserMagicCards",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Count = table.Column<int>(type: "INTEGER", nullable: false),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true),
-                    MagicCollectionId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserMagicCards", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserMagicCards_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
-                        principalTable: "MagiCards",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_UserMagicCards_MagicCollections_MagicCollectionId",
-                        column: x => x.MagicCollectionId,
-                        principalTable: "MagicCollections",
-                        principalColumn: "Id");
+                        principalColumn: "string_id");
                 });
 
             migrationBuilder.CreateTable(
@@ -459,8 +465,8 @@ namespace PSCHD.DB.Migrations
                     Price = table.Column<decimal>(type: "TEXT", nullable: false),
                     currency = table.Column<string>(type: "TEXT", nullable: true),
                     FinishId = table.Column<int>(type: "INTEGER", nullable: true),
-                    datetime = table.Column<DateTime>(type: "TEXT", rowVersion: true, nullable: false),
-                    MagicCardId = table.Column<int>(type: "INTEGER", nullable: true)
+                    datetime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -471,9 +477,73 @@ namespace PSCHD.DB.Migrations
                         principalTable: "Finishes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Prices_MagiCards_MagicCardId",
-                        column: x => x.MagicCardId,
+                        name: "FK_Prices_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
                         principalTable: "MagiCards",
+                        principalColumn: "string_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RelatedMagicCard",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    relatedCardID = table.Column<string>(type: "TEXT", nullable: true),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RelatedMagicCard", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RelatedMagicCard_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RelatedUris",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    URI = table.Column<string>(type: "TEXT", nullable: true),
+                    Source = table.Column<string>(type: "TEXT", nullable: true),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RelatedUris", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RelatedUris_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserMagicCards",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Count = table.Column<int>(type: "INTEGER", nullable: false),
+                    MagicCardstring_id = table.Column<string>(type: "TEXT", nullable: true),
+                    MagicCollectionId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserMagicCards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserMagicCards_MagiCards_MagicCardstring_id",
+                        column: x => x.MagicCardstring_id,
+                        principalTable: "MagiCards",
+                        principalColumn: "string_id");
+                    table.ForeignKey(
+                        name: "FK_UserMagicCards_MagicCollections_MagicCollectionId",
+                        column: x => x.MagicCollectionId,
+                        principalTable: "MagicCollections",
                         principalColumn: "Id");
                 });
 
@@ -736,6 +806,296 @@ namespace PSCHD.DB.Migrations
                 table: "Colors_Identity",
                 columns: new[] { "Id", "magicColorIdentity" },
                 values: new object[] { 26, 'Z' });
+
+            migrationBuilder.InsertData(
+                table: "Finishes",
+                columns: new[] { "Id", "finish" },
+                values: new object[] { 1, "nonfoil" });
+
+            migrationBuilder.InsertData(
+                table: "Finishes",
+                columns: new[] { "Id", "finish" },
+                values: new object[] { 2, "foil" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 1, "Flying" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 2, "Enchant" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 3, "Cascade" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 4, "Scavenge" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 5, "Manifest" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 6, "Trample" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 7, "Partner" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 8, "Aftermath" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 9, "Equip" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 10, "Flanking" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 11, "Defender" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 12, "Scry" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 13, "Flashback" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 14, "Reach" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 15, "Lifelink" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 16, "First strike" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 17, "Vigilance" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 18, "Transform" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 19, "Kicker" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 20, "Menace" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 21, "Heroic" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 22, "Persist" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 23, "Ascend" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 24, "Parley" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 25, "Mill" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 26, "Imprint" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 27, "Hexproof" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 28, "Convoke" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 29, "Surveil" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 30, "Mutate" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 31, "Hellbent" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 32, "Haste" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 33, "Landcycling" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 34, "Buyback" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 35, "Ward" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 36, "Threshold" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 37, "Foretell" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 38, "Fuse" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 39, "Cumulative upkeep" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 40, "Deathtouch" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 41, "Flash" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 42, "Explore" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 43, "Suspend" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 44, "Exploit" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 45, "Megamorph" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 46, "Ferocious" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 47, "Basic landcycling" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 48, "Fight" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 49, "Double strike" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 50, "Infect" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 51, "Channel" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 52, "Bestow" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 53, "Devoid" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 54, "Protection" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 55, "Typecycling" });
+
+            migrationBuilder.InsertData(
+                table: "Keywords",
+                columns: new[] { "Id", "Keyword" },
+                values: new object[] { 56, "Split second" });
 
             migrationBuilder.InsertData(
                 table: "MagicGames",
@@ -752,300 +1112,30 @@ namespace PSCHD.DB.Migrations
                 columns: new[] { "Id", "magicGame" },
                 values: new object[] { 3, "mtgo" });
 
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 1, "Flying" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 2, "Enchant" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 3, "Cascade" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 4, "Scavenge" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 5, "Manifest" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 6, "Trample" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 7, "Partner" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 8, "Aftermath" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 9, "Equip" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 10, "Flanking" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 11, "Defender" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 12, "Scry" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 13, "Flashback" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 14, "Reach" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 15, "Lifelink" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 16, "First strike" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 17, "Vigilance" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 18, "Transform" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 19, "Kicker" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 20, "Menace" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 21, "Heroic" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 22, "Persist" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 23, "Ascend" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 24, "Parley" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 25, "Mill" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 26, "Imprint" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 27, "Hexproof" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 28, "Convoke" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 29, "Surveil" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 30, "Mutate" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 31, "Hellbent" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 32, "Haste" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 33, "Landcycling" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 34, "Buyback" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 35, "Ward" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 36, "Threshold" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 37, "Foretell" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 38, "Fuse" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 39, "Cumulative upkeep" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 40, "Deathtouch" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 41, "Flash" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 42, "Explore" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 43, "Suspend" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 44, "Exploit" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 45, "Megamorph" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 46, "Ferocious" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 47, "Basic landcycling" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 48, "Fight" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 49, "Double strike" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 50, "Infect" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 51, "Channel" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 52, "Bestow" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 53, "Devoid" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 54, "Protection" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 55, "Typecycling" });
-
-            migrationBuilder.InsertData(
-                table: "MagicKeyword",
-                columns: new[] { "Id", "Keyword" },
-                values: new object[] { 56, "Split second" });
+            migrationBuilder.CreateIndex(
+                name: "IX_CardArtistsId_ArtistIdId",
+                table: "CardArtistsId",
+                column: "ArtistIdId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ArtistIDs_MagicCardId",
-                table: "ArtistIDs",
-                column: "MagicCardId");
+                name: "IX_CardArtistsId_MagicCardstring_id",
+                table: "CardArtistsId",
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Finishes_MagicCardId",
-                table: "Finishes",
-                column: "MagicCardId");
+                name: "IX_CardFinishes_FinishId",
+                table: "CardFinishes",
+                column: "FinishId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImageUris_ParentId",
+                name: "IX_CardFinishes_MagicCardstring_id",
+                table: "CardFinishes",
+                column: "MagicCardstring_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImageUris_Parentstring_id",
                 table: "ImageUris",
-                column: "ParentId");
+                column: "Parentstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MagiCards_legalitiesId",
@@ -1053,9 +1143,14 @@ namespace PSCHD.DB.Migrations
                 column: "legalitiesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MagicCardColorIdentities_MagicCardId",
+                name: "IX_MagiCards_MagicCardSetId",
+                table: "MagiCards",
+                column: "MagicCardSetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MagicCardColorIdentities_MagicCardstring_id",
                 table: "MagicCardColorIdentities",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MagicCardColorIdentities_MagicColorIdentityId",
@@ -1068,14 +1163,14 @@ namespace PSCHD.DB.Migrations
                 column: "ColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MagicCardColors_MagicCardId",
+                name: "IX_MagicCardColors_MagicCardstring_id",
                 table: "MagicCardColors",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MagicCardGames_MagicCardId",
+                name: "IX_MagicCardGames_MagicCardstring_id",
                 table: "MagicCardGames",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MagicCardGames_MagicGameId",
@@ -1083,14 +1178,14 @@ namespace PSCHD.DB.Migrations
                 column: "MagicGameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MagicCardKeyword_keywordId",
-                table: "MagicCardKeyword",
+                name: "IX_MagicCardKeywords_keywordId",
+                table: "MagicCardKeywords",
                 column: "keywordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MagicCardKeyword_MagicCardId",
-                table: "MagicCardKeyword",
-                column: "MagicCardId");
+                name: "IX_MagicCardKeywords_MagicCardstring_id",
+                table: "MagicCardKeywords",
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MagicCollections_UserId",
@@ -1098,9 +1193,9 @@ namespace PSCHD.DB.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MultiverseIds_MagicCardId",
+                name: "IX_MultiverseIds_MagicCardstring_id",
                 table: "MultiverseIds",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prices_FinishId",
@@ -1108,19 +1203,24 @@ namespace PSCHD.DB.Migrations
                 column: "FinishId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Prices_MagicCardId",
+                name: "IX_Prices_MagicCardstring_id",
                 table: "Prices",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RelatedUris_MagicCardId",
+                name: "IX_RelatedMagicCard_MagicCardstring_id",
+                table: "RelatedMagicCard",
+                column: "MagicCardstring_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RelatedUris_MagicCardstring_id",
                 table: "RelatedUris",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserMagicCards_MagicCardId",
+                name: "IX_UserMagicCards_MagicCardstring_id",
                 table: "UserMagicCards",
-                column: "MagicCardId");
+                column: "MagicCardstring_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserMagicCards_MagicCollectionId",
@@ -1144,7 +1244,10 @@ namespace PSCHD.DB.Migrations
                 name: "AppSettings");
 
             migrationBuilder.DropTable(
-                name: "ArtistIDs");
+                name: "CardArtistsId");
+
+            migrationBuilder.DropTable(
+                name: "CardFinishes");
 
             migrationBuilder.DropTable(
                 name: "ImageUris");
@@ -1159,13 +1262,16 @@ namespace PSCHD.DB.Migrations
                 name: "MagicCardGames");
 
             migrationBuilder.DropTable(
-                name: "MagicCardKeyword");
+                name: "MagicCardKeywords");
 
             migrationBuilder.DropTable(
                 name: "MultiverseIds");
 
             migrationBuilder.DropTable(
                 name: "Prices");
+
+            migrationBuilder.DropTable(
+                name: "RelatedMagicCard");
 
             migrationBuilder.DropTable(
                 name: "RelatedUris");
@@ -1177,6 +1283,9 @@ namespace PSCHD.DB.Migrations
                 name: "UserSettings");
 
             migrationBuilder.DropTable(
+                name: "ArtistIDs");
+
+            migrationBuilder.DropTable(
                 name: "Colors_Identity");
 
             migrationBuilder.DropTable(
@@ -1186,22 +1295,25 @@ namespace PSCHD.DB.Migrations
                 name: "MagicGames");
 
             migrationBuilder.DropTable(
-                name: "MagicKeyword");
+                name: "Keywords");
 
             migrationBuilder.DropTable(
                 name: "Finishes");
 
             migrationBuilder.DropTable(
-                name: "MagicCollections");
-
-            migrationBuilder.DropTable(
                 name: "MagiCards");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "MagicCollections");
 
             migrationBuilder.DropTable(
                 name: "Leglities");
+
+            migrationBuilder.DropTable(
+                name: "MagicCardSets");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

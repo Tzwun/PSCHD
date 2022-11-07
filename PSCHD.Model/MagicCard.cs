@@ -27,10 +27,12 @@ namespace PSCHD.Model
             ObservableCollection<MagicCardGame> games = new ObservableCollection<MagicCardGame>();
         }
 
+        //[Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public virtual int Id { get; set; }
+
+        //public virtual string _object { get; set; }
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual int Id { get; set; }
-        public virtual string _object { get; set; }
         public virtual string string_id { get; set; }
         public virtual string oracle_id { get; set; }
         public virtual int? mtgo_id { get; set; }
@@ -58,12 +60,12 @@ namespace PSCHD.Model
         public virtual bool promo { get; set; }
         public virtual bool reprint { get; set; }
         public virtual bool variation { get; set; }
-        public virtual string Cardset_id { get; set; }
-        public virtual string Cardset { get; set; }
-        public virtual string Cardset_name { get; set; }
-        public virtual string Cardset_type { get; set; }
-        public virtual string Cardset_uri { get; set; }
-        public virtual string Cardset_search_uri { get; set; }
+        //public virtual string Cardset_id { get; set; }
+        //public virtual string Cardset { get; set; }
+        //public virtual string Cardset_name { get; set; }
+        //public virtual string Cardset_type { get; set; }
+        //public virtual string Cardset_uri { get; set; }
+        //public virtual string Cardset_search_uri { get; set; }
         public virtual string scryfall_set_uri { get; set; }
         public virtual string rulings_uri { get; set; }
         public virtual string prints_search_uri { get; set; }
@@ -82,6 +84,7 @@ namespace PSCHD.Model
         public virtual bool story_spotlight { get; set; }
         public virtual int edhrec_rank { get; set; }
 
+        public virtual MagicCardSet MagicCardSet { get; set; }
         public virtual ObservableCollection<CardArtistsId> CardArtistsIds { get; set; }
         public virtual ObservableCollection<CardFinish> finishes { get; set; }
         public virtual ObservableCollection<MagicCardColor> colors { get; set; }

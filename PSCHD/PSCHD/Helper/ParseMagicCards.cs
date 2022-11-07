@@ -24,7 +24,6 @@ namespace PSCHD
 
             if (!repository.IsCardAlreadyAvailable(obj.Value<string>("id")))
             {
-
                 _card = new MagicCard();
 
                 foreach (var item in obj.Properties())
@@ -115,24 +114,24 @@ namespace PSCHD
                         case "variation":
                             _card.variation = obj.Value<bool>("variation");
                             break;
-                        case "set_id":
-                            _card.Cardset_id = obj.Value<string>("set_id");
-                            break;
-                        case "set_name":
-                            _card.Cardset_name = obj.Value<string>("set_name");
-                            break;
-                        case "set":
-                            _card.Cardset = obj.Value<string>("set");
-                            break;
-                        case "set_type":
-                            _card.Cardset_type = obj.Value<string>("set_type");
-                            break;
-                        case "set_uri":
-                            _card.Cardset_uri = obj.Value<string>("set_uri");
-                            break;
-                        case "set_search_uri":
-                            _card.Cardset_search_uri = obj.Value<string>("set_search_uri");
-                            break;
+                        //case "set_id":
+                        //    _card.Cardset_id = obj.Value<string>("set_id");
+                        //    break;
+                        //case "set_name":
+                        //    _card.Cardset_name = obj.Value<string>("set_name");
+                        //    break;
+                        //case "set":
+                        //    _card.Cardset = obj.Value<string>("set");
+                        //    break;
+                        //case "set_type":
+                        //    _card.Cardset_type = obj.Value<string>("set_type");
+                        //    break;
+                        //case "set_uri":
+                        //    _card.Cardset_uri = obj.Value<string>("set_uri");
+                        //    break;
+                        //case "set_search_uri":
+                        //    _card.Cardset_search_uri = obj.Value<string>("set_search_uri");
+                        //    break;
                         case "rulings_uri":
                             _card.rulings_uri = obj.Value<string>("rulings_uri");
                             break;
@@ -182,40 +181,40 @@ namespace PSCHD
                             _card.edhrec_rank = obj.Value<int>("edhrec_rank");
                             break;
                         case "prices":
-                            _card.prices = retrievePrices(item, obj);
+                            //_card.prices = retrievePrices(item, obj);
                             break;
                         case "legalities":
-                            _card.legalities = retrieveLegalities(item, obj);
+                            //_card.legalities = retrieveLegalities(item, obj);
                             break;
                         case "games":
-                            _card.games = retrieveGames(item, obj);
+                            //_card.games = retrieveGames(item, obj);
                             break;
                         case "finishes":
-                            _card.finishes = retrieveFinishes(item, obj);
+                            //_card.finishes = retrieveFinishes(item, obj);
                             break;
                         case "related_uris":
-                            _card.related_uris = retrieveRelatedUris(item, obj);
+                            //_card.related_uris = retrieveRelatedUris(item, obj);
                             break;
                         case "colors":
-                            _card.colors = retrieveColors(item, obj);
+                            //_card.colors = retrieveColors(item, obj);
                             break;
                         case "color_identity":
-                            _card.color_identity = retrieveColorIdentity(item, obj);
+                            //_card.color_identity = retrieveColorIdentity(item, obj);
                             break;
                         case "keywords":
-                            _card.keywords = retrieveKeywords(item, obj);
+                            //_card.keywords = retrieveKeywords(item, obj);
                             break;
                         case "artist_ids":
-                            _card.CardArtistsIds = retrieveArtistIds(item, obj);
+                            //_card.CardArtistsIds = retrieveArtistIds(item, obj);
                             break;
                         case "multiverse_ids":
-                            _card.multiverse_ids = retrieveMultiverseIds(item, obj);
+                            //_card.multiverse_ids = retrieveMultiverseIds(item, obj);
                             break;
                         case "image_uris":
-                            _card.image_uris = retrieveImageUris(item, obj);
+                            //_card.image_uris = retrieveImageUris(item, obj);
                             break;
                         case "all_parts": // Related Cards
-                            _card.relatedCards = retrieveRelatedCards(item, obj);
+                            //_card.relatedCards = retrieveRelatedCards(item, obj);
                             break;
                         default:
                             break;
@@ -459,7 +458,6 @@ namespace PSCHD
                     {
                         magicGame = new MagicGame { magicGame = item };
                     }
-
                     result.Add(new MagicCardGame
                     {
                         MagicGame = magicGame,

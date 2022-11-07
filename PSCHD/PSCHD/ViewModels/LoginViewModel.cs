@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Services.Dialogs;
 using PSCHD.Core.Mvvm;
+using PSCHD.Model;
 using PSCHD.Views;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,13 @@ namespace PSCHD.ViewModels
     {
         private string _userName;
         private LoginView _view;
+
+        private User _user;
+        public User User
+        {
+            get { return _user; }
+            set { SetProperty(ref _user, value); }
+        }
 
         public LoginViewModel(IUnityContainer unityContainer)
             : base(unityContainer)

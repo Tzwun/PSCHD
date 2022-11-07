@@ -92,16 +92,22 @@
             </Grid>
         </material:Card>
         <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="80" IsIndeterminate="True" Style="{StaticResource MaterialDesignCircularProgressBar}" Visibility="{Binding LoadCardsTask.IsNotCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        <ProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="80" Width="160" Value="{Binding ImportProgress, Mode=OneWay}" Style="{StaticResource  MaterialDesignLinearProgressBar}" Visibility="{Binding IsImporting, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsImporting, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{Binding ImportedCards}"/>
+            <TextBlock Text="{Binding ObjectsInQueue}"/>
+            <TextBlock Text="{Binding ImportProgress, StringFormat=N, Mode=OneWay}"/>
+            <ProgressBar Height="80" Width="160" Value="{Binding ImportProgress, Mode=OneWay}" IsIndeterminate="False" Style="{StaticResource  MaterialDesignLinearProgressBar}" />
+        </StackPanel>
+
         <ListBox Grid.Row="1" ItemsSource="{Binding LoadCardsTask.Result, IsAsync=True}" Visibility="{Binding ShowContent, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <core:VirtualizingWrapPanel ChildHeight="650" ChildWidth="380" VirtualizingPanel.CacheLengthUnit="Item" VirtualizingPanel.CacheLength="52" VirtualizingPanel.ScrollUnit="Pixel"/>
+                    <core:VirtualizingWrapPanel ChildHeight="300" ChildWidth="380" VirtualizingPanel.CacheLengthUnit="Item" VirtualizingPanel.CacheLength="52" VirtualizingPanel.ScrollUnit="Pixel"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <material:TransitioningContent Margin="8" HorizontalAlignment="Stretch" OpeningEffectsOffset="{material:IndexedItemOffsetMultiplierExtension 0:0:0.1}"
+                    <material:TransitioningContent Margin="8" HorizontalAlignment="Stretch" VerticalContentAlignment="Top" OpeningEffectsOffset="{material:IndexedItemOffsetMultiplierExtension 0:0:0.1}"
                                                                  Opacity="0"
                                                                  RunHint="Loaded">
                         <material:TransitioningContent.OpeningEffects>
@@ -109,7 +115,7 @@
                             <material:TransitionEffect Kind="FadeIn" />
                         </material:TransitioningContent.OpeningEffects>
 
-                        <GroupBox Width="333" Style="{StaticResource MaterialDesignGroupBox}" VerticalAlignment="Stretch" material:ColorZoneAssist.Mode="SecondaryLight">
+                        <GroupBox Width="333" Style="{StaticResource MaterialDesignGroupBox}" VerticalAlignment="Top" material:ColorZoneAssist.Mode="SecondaryLight">
                             <GroupBox.Header>
                                 <DockPanel>
                                     <TextBlock DockPanel.Dock="Left">

@@ -17,7 +17,7 @@ namespace PSCHD.DB
             {
                 System.IO.Directory.CreateDirectory(path);
             }
-            DbPath = System.IO.Path.Join(path, "PSCHD.db");
+            DbPath = System.IO.Path.Join(path, "PSCHD_Test.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -149,7 +149,7 @@ namespace PSCHD.DB
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source={DbPath}");
+            optionsBuilder.UseSqlite($"Data Source={DbPath}").EnableThreadSafetyChecks(false);
         }
 
         public DbSet<MagicCard> MagiCards { get; set; }
@@ -175,5 +175,6 @@ namespace PSCHD.DB
         public DbSet<MagicCardGame> MagicCardGames { get; set; }
         public DbSet<CardFinish> CardFinishes { get; set; }
         public DbSet<CardArtistsId> CardArtistsId { get; set; }
+        public DbSet<MagicCardSet> MagicCardSets { get; set; }
     }
 }

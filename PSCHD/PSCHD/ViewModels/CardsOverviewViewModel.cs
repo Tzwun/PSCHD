@@ -16,19 +16,21 @@ using Prism.Commands;
 using MaterialDesignExtensions.Controls;
 using System;
 using System.ComponentModel;
+using System.Windows;
+using System.Threading;
 
 namespace PSCHD.ViewModels
 {
     public class CardsOverviewViewModel : ViewModelBase, INavigationAware
     {
         private MagicCardRepository _repository;
-
-        //private ObservableCollection<MagicCard> _magicCards;
-        //public ObservableCollection<MagicCard> MagicCards
-        //{
-        //    get { return _magicCards; }
-        //    set { SetProperty(ref _magicCards, value); }
-        //}
+        private Dispatcher _dispatcher;
+        private int _importedCards;
+        public int ImportedCards
+        {
+            get { return _importedCards; }
+            set { SetProperty(ref _importedCards, value); }
+        }
 
         private bool _isImporting;
         public bool IsImporting
@@ -37,10 +39,17 @@ namespace PSCHD.ViewModels
             set { SetProperty(ref _isImporting, value); }
         }
 
+        private int _objectsInQueue;
+        public int ObjectsInQueue
+        {
+            get { return _objectsInQueue; }
+            set { SetProperty(ref _objectsInQueue, value); }
+        }
+
         public CardsOverviewViewModel(IUnityContainer unityContainer)
             : base(unityContainer)
         {
-            _repository = new MagicCardRepository();
+            _repository = new MagicCardRepository(-1);
         }
 
 
@@ -74,13 +83,13 @@ namespace PSCHD.ViewModels
         private DelegateCommand _importCommand;
         private long _filesize;
         private long _position;
-        public int ImportProgress
+        public float ImportProgress
         {
             get
             {
                 if (_filesize != 0)
                 {
-                    return (int)(_position / _filesize);
+                    return (_position / _filesize);
                 }
                 else
                 {
@@ -113,6 +122,7 @@ namespace PSCHD.ViewModels
                 LoadCardsTask = null;
                 IsImporting = true;
                 RaisePropertyChanged("ShowContent");
+                ImportedCards = 0;
                 await ImportCards(fileResults.File);
                 IsImporting = false;
                 RaisePropertyChanged("ShowContent");
@@ -140,23 +150,117 @@ namespace PSCHD.ViewModels
                 using (JsonReader reader = new JsonTextReader(sr))
                 {
                     _filesize = sr.BaseStream.Length;
-                    await Task.Run(() =>
+                    Queue<JObject> jObjects = new Queue<JObject>();
+                    List<MagicCard> cards = new List<MagicCard>();
+                    List<string> CardIDs = new List<string>();
+                    object locker = new object();
+                    object doclocker = new object();
+                    object jsonLocker = new object();
+                    bool DocIsFinished = false;
+                    using (var _reps = new MagicCardRepository(-1))
                     {
-                        while (reader.Read())
+                        CardIDs = _reps.getAllInsertedIDs();
+                    }
+
+                    var tasks = new List<Task>();
+                    while (!DocIsFinished)
+                    {
+                        for (var i = 0; i < Environment.ProcessorCount; i++)
                         {
-                            if (reader.TokenType == JsonToken.StartObject)
+                            if (i == 0)
                             {
-                                JObject obj = JObject.Load(reader);
-                                _repository.SaveNewCard(ParseMagicCards.Parse(obj, _repository));
+                                tasks.Add(Task.Run(() =>
+                                {
+                                    JObject tempObject = null;
+                                    lock (jsonLocker)
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            if (reader.TokenType == JsonToken.StartObject)
+                                            {
+                                                if ((jObjects.Count > 2000))
+                                                {
+                                                    Task.Delay(600).Wait();
+                                                }
+                                                //if ((jObjects.Count > 500))
+                                                //{
+                                                //    Task.Delay(15).Wait();
+                                                //}
+                                                tempObject = JObject.Load(reader);
+                                                if (!CardIDs.Contains(tempObject.Value<string>("id")) && tempObject.Value<string>("object") == "card")
+                                                {
+                                                    CardIDs.Add(tempObject.Value<string>("id"));
+                                                    if (tempObject != null)
+                                                    {
+                                                        lock (locker)
+                                                        {
+                                                            jObjects.Enqueue(tempObject);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            //_dispatcher.BeginInvoke(() => ImportedCards++);
+                                            _dispatcher.BeginInvoke(() => RaisePropertyChanged("ImportProgress"));
+                                            _dispatcher.BeginInvoke(() => ObjectsInQueue = jObjects.Count);
+
+                                            _position = sr.BaseStream.Position;
+                                            if (_position >= _filesize)
+                                            {
+                                                lock (doclocker)
+                                                {
+                                                    DocIsFinished = true;
+                                                }
+                                            }
+                                        }
+                                        RaisePropertyChanged("ImportProgress");
+                                    }
+                                }
+                            ));
                             }
-                            _position = sr.BaseStream.Position;
-                            RaisePropertyChanged("ImportProgress");
+                            else
+                            {
+                                tasks.Add(Task.Run(() =>
+                                {
+                                    int id = i;
+                                    int lastRefresh = 0;
+                                    JObject obj = null;
+                                    while (!DocIsFinished)
+                                    {
+                                        if (jObjects.Count > 0)
+                                        {
+                                            lock (locker)
+                                            {
+                                                if (jObjects.Count != 0)
+                                                {
+                                                    obj = jObjects.Dequeue();
+                                                }
+                                            }
+                                            //if ((ImportedCards - lastRefresh) >= 2000)
+                                            //{
+                                            //    //_repositories[i].DisposeAndCreate();
+                                            //    //repo.DisposeAndCreate();
+                                            //    lastRefresh = ImportedCards;
+                                            //}
+                                            if (obj != null)
+                                            {
+                                                //_repositories[i].SaveNewCard(ParseMagicCards.Parse(obj, _repositories[i]));
+                                                var repo = new MagicCardRepository(id, Thread.CurrentThread);
+                                                if (repo.SaveNewCard(ParseMagicCards.Parse(obj, repo)))
+                                                    _dispatcher.BeginInvoke(() => ImportedCards++);
+                                                repo.Dispose();
+                                                _dispatcher.BeginInvoke(() => ObjectsInQueue = jObjects.Count);
+                                            }
+                                        }
+                                    }
+                                }));
+                            }
                         }
-                    });
+                        await Task.WhenAll(tasks);
+                    }
                 }
             }
-
         }
+
 
         private async Task<ObservableCollection<MagicCard>> LoadMagicCards()
         {
@@ -164,9 +268,16 @@ namespace PSCHD.ViewModels
             return (ObservableCollection<MagicCard>)_result.AddRange(await (_repository.GetAllCardsAsync()));
         }
 
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+
+        }
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
+            _dispatcher = Application.Current.Dispatcher;
             //if (navigationContext.Parameters.Count != 0)
             //{
             //    var filePath = navigationContext.Parameters.GetValue<string>("filePath");

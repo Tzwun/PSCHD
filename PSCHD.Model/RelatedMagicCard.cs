@@ -9,5 +9,6 @@ namespace PSCHD.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public virtual int Id { get; set; }
         public virtual string relatedCardID { get; set; }
+
     }
 }

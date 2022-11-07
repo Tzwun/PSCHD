@@ -4,21 +4,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace PSCHD.DB
 {
-    public class MagicCardRepository
+    public class MagicCardRepository : IDisposable
     {
         PSCHD_Context context;
+        private static object locker = new object();
+
+        private int ThreadID;
+        private Thread currentThread;
+        private readonly int i;
+
+        public List<string> getAllInsertedIDs()
+        {
+            return context.MagiCards.Select(f => f.string_id).ToList();
+        }
 
         public bool IsCardAlreadyAvailable(string stringId)
         {
             return context.MagiCards.Any(e => e.string_id == stringId);
         }
-        public MagicCardRepository()
+        public MagicCardRepository(int i)
         {
             context = new PSCHD_Context();
+            ThreadID = Thread.CurrentThread.ManagedThreadId;
+            this.i = i;
+        }
+
+        public MagicCardRepository(int i, Thread currentThread) : this(i)
+        {
+            this.currentThread = currentThread;
         }
 
         public async Task<List<string>> GetAllLanguagesAsync()
@@ -26,15 +46,39 @@ namespace PSCHD.DB
             return await context.MagiCards.Select(e => e.lang).Distinct().ToListAsync();
         }
 
-        public void SaveNewCard(MagicCard magicCard)
+        public bool SaveNewCard(MagicCard magicCard)
         {
+            bool result = false;
             if (magicCard != null)
             {
-                context.MagiCards.Add(magicCard);
-                context.SaveChanges();
+                lock (locker)
+                {
+                    if (!IsCardAlreadyAvailable(magicCard.string_id))
+                    {
+                        context.MagiCards.Add(magicCard);
+                        var temp = context.SaveChanges();
+                        if (temp != 0)
+                        {
+                            result = true;
+                        }
+                    }
+                }
             }
+            return result;
         }
 
+        public void SaveNewCards(List<MagicCard> cards)
+        {
+
+            foreach (MagicCard item in cards)
+            {
+                if (item != null)
+                {
+                    context.MagiCards.Add(item);
+                }
+            }
+            context.SaveChanges();
+        }
         public List<MagicCard> GetAllCards()
         {
             return context.MagiCards.Include(e => e.image_uris).ToList();
@@ -78,6 +122,25 @@ namespace PSCHD.DB
         public MagicGame RetrieveGame(string game)
         {
             return context.MagicGames.SingleOrDefault(e => e.magicGame == game);
+        }
+
+        public void Dispose()
+        {
+            if (context != null)
+            {
+                context.Dispose();
+                context = null;
+            }
+        }
+
+        public void DisposeAndCreate()
+        {
+            if (context != null)
+            {
+                context.Dispose();
+                context = null;
+            }
+            context = new PSCHD_Context();
         }
     }
 }
